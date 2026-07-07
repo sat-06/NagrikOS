@@ -1,0 +1,1 @@
+"""NagrikOS backend application."""
