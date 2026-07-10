@@ -7,11 +7,22 @@ import { LanguageSwitcher } from "./language-switcher";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  Home, MessageSquareText, Radar, Target, FileCheck2, Megaphone,
-  Inbox, UserCircle2, LogOut,
+  Home,
+  MessageSquareText,
+  Radar,
+  Target,
+  FileCheck2,
+  Megaphone,
+  Inbox,
+  UserCircle2,
+  LogOut,
 } from "lucide-react";
 
-interface NavItem { to: string; icon: typeof Home; labelKey: string; }
+interface NavItem {
+  to: string;
+  icon: typeof Home;
+  labelKey: string;
+}
 
 const NAV: NavItem[] = [
   { to: "/dashboard", icon: Home, labelKey: "nav.home" },
@@ -24,33 +35,54 @@ const NAV: NavItem[] = [
   { to: "/profile", icon: UserCircle2, labelKey: "nav.profile" },
 ];
 
-export function AppShell({ children, title }: { children: ReactNode; title?: string }) {
+export function AppShell({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title?: string;
+}) {
   const { user, isAuthenticated, loading, logout } = useAuth();
   const { t } = useI18n();
   const navigate = useNavigate();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = useRouterState({
+    select: (s) => s.location.pathname,
+  });
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) navigate({ to: "/login" });
+    if (!loading && !isAuthenticated) {
+      navigate({ to: "/login" });
+    }
   }, [loading, isAuthenticated, navigate]);
 
   if (loading || !isAuthenticated) {
     return (
       <div className="grid min-h-dvh place-items-center text-sm text-muted-foreground">
-        Loading…
+        {t("common.loading")}
       </div>
     );
   }
 
   return (
     <div className="flex min-h-dvh flex-col bg-surface lg:flex-row">
-      {/* Sidebar (desktop) */}
       <aside className="hidden w-64 shrink-0 flex-col border-r bg-sidebar lg:flex">
-        <div className="p-5"><Link to="/dashboard"><BrandMark /></Link></div>
-        <nav aria-label="Primary" className="flex-1 space-y-1 px-3">
+        <div className="p-5">
+          <Link to="/dashboard">
+            <BrandMark />
+          </Link>
+        </div>
+
+        <nav
+          aria-label={t("nav.primary")}
+          className="flex-1 space-y-1 px-3"
+        >
           {NAV.map((item) => {
-            const active = pathname === item.to || (item.to !== "/dashboard" && pathname.startsWith(item.to));
+            const active =
+              pathname === item.to ||
+              (item.to !== "/dashboard" && pathname.startsWith(item.to));
+
             const Icon = item.icon;
+
             return (
               <Link
                 key={item.to}
@@ -68,25 +100,43 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
             );
           })}
         </nav>
+
         <div className="border-t p-4">
-          <div className="mb-3 text-xs text-muted-foreground">Signed in as</div>
-          <div className="mb-3 truncate text-sm font-medium">{user?.fullName}</div>
+          <div className="mb-3 text-xs text-muted-foreground">
+            {t("common.signedInAs")}
+          </div>
+
+          <div className="mb-3 truncate text-sm font-medium">
+            {user?.fullName}
+          </div>
+
           <Button
-            variant="outline" size="sm" className="w-full"
-            onClick={async () => { await logout(); navigate({ to: "/login" }); }}
+            variant="outline"
+            size="sm"
+            className="w-full"
+            onClick={async () => {
+              await logout();
+              navigate({ to: "/login" });
+            }}
           >
-            <LogOut className="mr-2 h-4 w-4" /> {t("cta.signOut")}
+            <LogOut className="mr-2 h-4 w-4" />
+            {t("cta.signOut")}
           </Button>
         </div>
       </aside>
 
-      {/* Main column */}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b bg-background/80 px-4 backdrop-blur lg:px-8">
           <div className="flex items-center gap-3 lg:hidden">
-            <Link to="/dashboard"><BrandMark size={28} /></Link>
+            <Link to="/dashboard">
+              <BrandMark size={28} />
+            </Link>
           </div>
-          <h1 className="hidden truncate font-display text-lg font-semibold lg:block">{title}</h1>
+
+          <h1 className="hidden truncate font-display text-lg font-semibold lg:block">
+            {title}
+          </h1>
+
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
           </div>
@@ -94,22 +144,29 @@ export function AppShell({ children, title }: { children: ReactNode; title?: str
 
         <main className="flex-1 px-4 pb-24 pt-6 lg:px-8 lg:pb-10">
           {title && (
-            <h1 className="mb-6 font-display text-2xl font-semibold tracking-tight lg:hidden">{title}</h1>
+            <h1 className="mb-6 font-display text-2xl font-semibold tracking-tight lg:hidden">
+              {title}
+            </h1>
           )}
+
           {children}
         </main>
 
-        {/* Mobile bottom nav */}
         <nav
-          aria-label="Primary mobile"
+          aria-label={t("nav.primaryMobile")}
           className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t bg-background/95 py-2 backdrop-blur lg:hidden"
         >
           {NAV.slice(0, 5).map((item) => {
-            const active = pathname === item.to || (item.to !== "/dashboard" && pathname.startsWith(item.to));
+            const active =
+              pathname === item.to ||
+              (item.to !== "/dashboard" && pathname.startsWith(item.to));
+
             const Icon = item.icon;
+
             return (
               <Link
-                key={item.to} to={item.to}
+                key={item.to}
+                to={item.to}
                 className={cn(
                   "flex min-w-[56px] flex-col items-center gap-1 rounded-lg px-2 py-1 text-[10px] font-medium",
                   active ? "text-primary" : "text-muted-foreground",

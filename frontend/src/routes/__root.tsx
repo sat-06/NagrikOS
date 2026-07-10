@@ -13,87 +13,178 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppProviders } from "@/providers/app-providers";
 import { Toaster } from "@/components/ui/sonner";
+import { useI18n } from "@/i18n/i18n-context";
 
 function NotFoundComponent() {
+  const { t } = useI18n();
+
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-display text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold">Page not found</h2>
+        <h1 className="font-display text-7xl font-bold text-foreground">
+          404
+        </h1>
+
+        <h2 className="mt-4 text-xl font-semibold">
+          {t("error.notFound.title")}
+        </h2>
+
         <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist.
+          {t("error.notFound.description")}
         </p>
+
         <Link
           to="/"
           className="mt-6 inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90"
         >
-          Back to NagrikOS
+          {t("common.backToNagrikOS")}
         </Link>
       </div>
     </div>
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({
+  error,
+  reset,
+}: {
+  error: Error;
+  reset: () => void;
+}) {
   const router = useRouter();
+  const { t } = useI18n();
+
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportLovableError(error, {
+      boundary: "tanstack_root_error_component",
+    });
   }, [error]);
+
   return (
     <div className="flex min-h-dvh items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold">This page didn't load</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Something went wrong. Try again.</p>
+        <h1 className="text-xl font-semibold">
+          {t("error.pageLoad.title")}
+        </h1>
+
+        <p className="mt-2 text-sm text-muted-foreground">
+          {t("error.pageLoad.description")}
+        </p>
+
         <div className="mt-6 flex justify-center gap-2">
           <button
-            onClick={() => { router.invalidate(); reset(); }}
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
             className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-          >Try again</button>
-          <a href="/" className="rounded-md border px-4 py-2 text-sm font-medium">Go home</a>
+          >
+            {t("common.tryAgain")}
+          </button>
+
+          <a
+            href="/"
+            className="rounded-md border px-4 py-2 text-sm font-medium"
+          >
+            {t("common.goHome")}
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "NagrikOS — AI that turns civic confusion into action" },
-      { name: "description", content: "NagrikOS is an AI Civic Action Agent that helps citizens discover services, prepare documents, launch civic missions, and report public issues in their own language." },
-      { name: "author", content: "NagrikOS" },
-      { property: "og:title", content: "NagrikOS — AI Civic Action Agent" },
-      { property: "og:description", content: "Turn everyday civic confusion into clear, trackable action journeys." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" },
-    ],
-  }),
-  shellComponent: RootShell,
-  component: RootComponent,
-  notFoundComponent: NotFoundComponent,
-  errorComponent: ErrorComponent,
-});
+export const Route =
+  createRootRouteWithContext<{ queryClient: QueryClient }>()({
+    head: () => ({
+      meta: [
+        { charSet: "utf-8" },
+        {
+          name: "viewport",
+          content: "width=device-width, initial-scale=1",
+        },
+        {
+          title: "NagrikOS — AI that turns civic confusion into action",
+        },
+        {
+          name: "description",
+          content:
+            "NagrikOS is an AI Civic Action Agent that helps citizens discover services, prepare documents, launch civic missions, and report public issues in their own language.",
+        },
+        {
+          name: "author",
+          content: "NagrikOS",
+        },
+        {
+          property: "og:title",
+          content: "NagrikOS — AI Civic Action Agent",
+        },
+        {
+          property: "og:description",
+          content:
+            "Turn everyday civic confusion into clear, trackable action journeys.",
+        },
+        {
+          property: "og:type",
+          content: "website",
+        },
+        {
+          name: "twitter:card",
+          content: "summary_large_image",
+        },
+      ],
+
+      links: [
+        {
+          rel: "stylesheet",
+          href: appCss,
+        },
+        {
+          rel: "icon",
+          href: "/favicon.ico",
+          type: "image/x-icon",
+        },
+        {
+          rel: "preconnect",
+          href: "https://fonts.googleapis.com",
+        },
+        {
+          rel: "preconnect",
+          href: "https://fonts.gstatic.com",
+          crossOrigin: "anonymous",
+        },
+        {
+          rel: "stylesheet",
+          href:
+            "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap",
+        },
+      ],
+    }),
+
+    shellComponent: RootShell,
+    component: RootComponent,
+    notFoundComponent: NotFoundComponent,
+    errorComponent: ErrorComponent,
+  });
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
-      <body>{children}<Scripts /></body>
+      <head>
+        <HeadContent />
+      </head>
+
+      <body>
+        {children}
+        <Scripts />
+      </body>
     </html>
   );
 }
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
   return (
     <QueryClientProvider client={queryClient}>
       <AppProviders>
