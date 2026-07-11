@@ -1,104 +1,153 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useAuth } from "@/lib/auth/auth-context";
 import { BrandMark } from "@/components/layout/brand-mark";
+import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { useAuth } from "@/lib/auth/auth-context";
+import { useI18n } from "@/i18n/i18n-context";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/register")({
-  head: () => ({ meta: [{ title: "Create your NagrikOS account" }, { name: "description", content: "Create your NagrikOS civic action space." }] }),
-  component: RegisterPage,
+  head: () => ({
+    meta: [{ title: "Create account — NagrikOS" }],
+  }),
+  component: Register,
 });
 
-function RegisterPage() {
+function Register() {
   const { register } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [show, setShow] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  async function onSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(null);
-    if (!fullName.trim() || !email.includes("@") || password.length < 6) {
-      return setError("Please fill all fields; password needs at least 6 characters.");
+
+    if (password.length < 6) {
+      toast.error(t("register.validation.passwordLength"));
+      return;
     }
-    if (password !== confirm) return setError("Passwords do not match.");
-    setLoading(true);
+
+    setSubmitting(true);
+
     try {
-      await register(fullName.trim(), email, password);
-      toast.success("Account created — let's set up your profile.");
+      await register(fullName, email, password);
+      toast.success(t("register.toast.success"));
       navigate({ to: "/onboarding" });
-    } catch { setError("Could not create account."); }
-    finally { setLoading(false); }
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t("register.toast.error"),
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
-    <div className="grid min-h-dvh lg:grid-cols-2">
-      <div className="flex items-center justify-center bg-background px-4 py-10 lg:order-2">
-        <Card className="w-full max-w-md p-6 shadow-card">
-          <Link to="/" className="lg:hidden"><BrandMark /></Link>
-          <h1 className="mt-4 font-display text-2xl font-semibold">Create your account</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Frontend demo — no data is sent to a real server.</p>
+    <div className="min-h-dvh bg-background">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 lg:px-8">
+        <Link to="/">
+          <BrandMark />
+        </Link>
 
-          <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
-            <div className="space-y-1.5">
-              <Label htmlFor="fullName">Full name</Label>
-              <Input id="fullName" required autoComplete="name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input id="password" type={show ? "text" : "password"} required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <button type="button" onClick={() => setShow((s) => !s)} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground hover:text-foreground" aria-label={show ? "Hide password" : "Show password"}>
-                  {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="confirm">Confirm password</Label>
-              <Input id="confirm" type={show ? "text" : "password"} required autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
+        <LanguageSwitcher />
+      </header>
+
+      <main className="mx-auto grid max-w-6xl place-items-center px-4 py-10 lg:px-8 lg:py-16">
+        <Card className="w-full max-w-md p-6 shadow-elevated sm:p-8">
+          <div>
+            <h1 className="font-display text-2xl font-semibold">
+              {t("register.title")}
+            </h1>
+
+            <p className="mt-2 text-sm text-muted-foreground">
+              {t("register.subtitle")}
+            </p>
+          </div>
+
+          <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+            <div className="space-y-2">
+              <Label htmlFor="fullName">
+                {t("register.fullName.label")}
+              </Label>
+
+              <Input
+                id="fullName"
+                autoComplete="name"
+                placeholder={t("register.fullName.placeholder")}
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+              />
             </div>
 
-            {error && <div role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</div>}
+            <div className="space-y-2">
+              <Label htmlFor="email">
+                {t("register.email.label")}
+              </Label>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Create account
+              <Input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder={t("register.email.placeholder")}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">
+                {t("register.password.label")}
+              </Label>
+
+              <Input
+                id="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder={t("register.password.placeholder")}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+
+              <p className="text-xs text-muted-foreground">
+                {t("register.password.help")}
+              </p>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={submitting}
+            >
+              {submitting
+                ? t("register.submitting")
+                : t("register.submit")}
             </Button>
           </form>
 
-          <div className="mt-4 text-sm text-muted-foreground">
-            Already have an account? <Link to="/login" className="text-primary hover:underline">Sign in</Link>
-          </div>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            {t("register.haveAccount")}{" "}
+            <Link
+              to="/login"
+              className="font-medium text-primary hover:underline"
+            >
+              {t("cta.signIn")}
+            </Link>
+          </p>
         </Card>
-      </div>
-
-      <div className="relative hidden gradient-hero lg:order-1 lg:block">
-        <div className="absolute inset-0 p-10 text-primary-foreground">
-          <BrandMark />
-          <div className="mt-24 max-w-md">
-            <h2 className="font-display text-4xl font-semibold leading-tight">
-              Your civic assistant, built around you.
-            </h2>
-            <p className="mt-4 text-primary-foreground/80">
-              A short onboarding sharpens what NagrikOS suggests — from scholarships and health cover
-              to reporting road issues in your neighbourhood.
-            </p>
-          </div>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }
