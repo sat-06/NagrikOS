@@ -27,11 +27,24 @@ class UserOut(BaseModel):
 
     id: int
     email: str
+    full_name: Optional[str] = None
     is_active: bool
     created_at: datetime
+
+    @classmethod
+    def model_validate(cls, user):
+        profile = getattr(user, "profile", None)
+
+        return cls(
+            id=user.id,
+            email=user.email,
+            full_name=profile.full_name if profile else None,
+            is_active=user.is_active,
+            created_at=user.created_at,
+        )
 
 
 class AuthResponse(BaseModel):
     user: UserOut
     access_token: str
-    token_type: str = "bearer"
+    token_type: str = "bearer"  
