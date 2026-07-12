@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { useAuth } from "@/lib/auth/auth-context";
 import {
   ArrowRight, MessageSquareText, Radar, FileCheck2, Megaphone,
   Target, Inbox, Sparkles,
@@ -27,6 +28,7 @@ const PROMPTS = [
 
 function Dashboard() {
   const { t } = useI18n();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<CitizenProfile | null>(null);
   const [missions, setMissions] = useState<CivicMission[]>([]);
   const [recs, setRecs] = useState<Recommendation[]>([]);
@@ -57,7 +59,7 @@ function Dashboard() {
           <Sparkles className="h-3.5 w-3.5" /> AI Saathi
         </div>
         <h2 className="mt-2 font-display text-2xl font-semibold lg:text-3xl">
-          {t("dashboard.greeting")}, {profile?.fullName?.split(" ")[0] ?? "friend"} 👋
+          {t("dashboard.greeting")}, {(user?.fullName || profile?.fullName || "Friend").split(" ")[0]} 👋
         </h2>
         <p className="mt-1 text-muted-foreground">{t("dashboard.subtitle")}</p>
 
