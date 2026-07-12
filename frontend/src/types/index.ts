@@ -9,6 +9,7 @@ export interface User {
   email: string;
   fullName: string;
   createdAt: string;
+  is_active?: boolean;
 }
 
 export interface AuthResponse {
@@ -17,17 +18,39 @@ export interface AuthResponse {
 }
 
 export interface CitizenProfile {
+  id?: number;
   userId: string;
+
   fullName: string;
+
   preferredLanguage: Language;
+
   state?: string;
   district?: string;
-  age?: number;
+
+  dateOfBirth?: string;
+
   occupation?: string;
-  incomeBand?: "below_1L" | "1L_3L" | "3L_6L" | "6L_12L" | "above_12L";
+
+  incomeBand?: string;
+
+  gender?: string;
+
   isStudent?: boolean;
+
   isFarmer?: boolean;
-  completeness: number; // 0-100
+
+  isSeniorCitizen?: boolean;
+
+  isWoman?: boolean;
+
+  extraAttributes?: string;
+
+  completeness: number;
+
+  createdAt?: string;
+
+  updatedAt?: string;
 }
 
 export type ServiceCategory =
