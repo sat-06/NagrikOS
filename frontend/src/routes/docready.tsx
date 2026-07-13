@@ -13,6 +13,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { documentService, servicesService } from "@/lib/api/services";
+import { getApiErrorMessage } from "@/lib/api/client";
 import type { DocumentReadiness, ServiceScheme } from "@/types";
 import { useI18n } from "@/i18n/i18n-context";
 import {
@@ -42,6 +43,8 @@ function DocReadyPage() {
   const { t } = useI18n();
   const initial = Route.useSearch();
   const [services, setServices] = useState<ServiceScheme[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesError, setServicesError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string>(initial.svc ?? "");
   const [readiness, setReadiness] = useState<DocumentReadiness | null>(null);
   const [loading, setLoading] = useState(false);
@@ -50,7 +53,15 @@ function DocReadyPage() {
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
-    servicesService.list().then(setServices);
+    setServicesLoading(true);
+    setServicesError(null);
+    servicesService
+      .list()
+      .then((list) => setServices(list))
+      .catch((err) =>
+        setServicesError(getApiErrorMessage(err, "Could not load services. Please try again.")),
+      )
+      .finally(() => setServicesLoading(false));
   }, []);
   useEffect(() => {
     if (!selected) return;
@@ -81,19 +92,38 @@ function DocReadyPage() {
             Select context
           </div>
           <div className="mt-2">
-            <Select value={selected} onValueChange={setSelected}>
+            <Select value={selected} onValueChange={setSelected} disabled={servicesLoading}>
               <SelectTrigger>
-                <SelectValue placeholder="Choose a service or mission" />
+                <SelectValue
+                  placeholder={
+                    servicesLoading ? "Loading services…" : "Choose a service or mission"
+                  }
+                />
               </SelectTrigger>
               <SelectContent>
-                {services.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.name}
-                  </SelectItem>
-                ))}
+                {services.length > 0 ? (
+                  services.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="px-2 py-2 text-sm text-muted-foreground">
+                    No services available.
+                  </div>
+                )}
               </SelectContent>
             </Select>
           </div>
+          {!servicesLoading && (servicesError || services.length === 0) && (
+            <div className="mt-2 flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-warning-foreground">
+              <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
+              <span>
+                {servicesError ??
+                  "No services found. Make sure the backend is running and its database has been seeded (python -m app.db.seed)."}
+              </span>
+            </div>
+          )}
 
           <div
             onDragOver={(e) => {
