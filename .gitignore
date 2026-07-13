@@ -62,3 +62,4 @@ Thumbs.db
 # Logs
 *.log
 backend/test_uploads/
+test-plan.md
