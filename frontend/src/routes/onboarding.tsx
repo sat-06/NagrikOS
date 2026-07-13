@@ -6,7 +6,13 @@ import { BrandMark } from "@/components/layout/brand-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
@@ -31,7 +37,9 @@ function OnboardingPage() {
   useEffect(() => {
     if (!loading && !isAuthenticated) navigate({ to: "/login" });
   }, [loading, isAuthenticated, navigate]);
-  useEffect(() => { if (user) setData((d) => ({ ...d, fullName: d.fullName ?? user.fullName })); }, [user]);
+  useEffect(() => {
+    if (user) setData((d) => ({ ...d, fullName: d.fullName ?? user.fullName }));
+  }, [user]);
 
   const progress = ((step + 1) / STEPS.length) * 100;
 
@@ -41,7 +49,9 @@ function OnboardingPage() {
       await profileService.saveProfile({ ...data, completeness: 80 });
       toast.success("Profile saved");
       navigate({ to: "/dashboard" });
-    } finally { setSaving(false); }
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -49,25 +59,36 @@ function OnboardingPage() {
       <div className="mx-auto max-w-2xl">
         <div className="mb-6 flex items-center justify-between">
           <BrandMark />
-          <span className="text-xs text-muted-foreground">Step {step + 1} of {STEPS.length}</span>
+          <span className="text-xs text-muted-foreground">
+            Step {step + 1} of {STEPS.length}
+          </span>
         </div>
         <Progress value={progress} className="mb-6 h-1.5" />
 
         <Card className="p-6">
           <h1 className="font-display text-2xl font-semibold">{STEPS[step]}</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Your profile helps NagrikOS surface more relevant civic opportunities. All fields are optional except your name.
+            Your profile helps NagrikOS surface more relevant civic opportunities. All fields are
+            optional except your name.
           </p>
 
           <div className="mt-6 space-y-4">
             {step === 0 && (
               <>
                 <Field label="Full name" required>
-                  <Input value={data.fullName ?? ""} onChange={(e) => setData({ ...data, fullName: e.target.value })} />
+                  <Input
+                    value={data.fullName ?? ""}
+                    onChange={(e) => setData({ ...data, fullName: e.target.value })}
+                  />
                 </Field>
                 <Field label="Preferred language">
-                  <Select value={data.preferredLanguage ?? "en"} onValueChange={(v) => setData({ ...data, preferredLanguage: v as Language })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={data.preferredLanguage ?? "en"}
+                    onValueChange={(v) => setData({ ...data, preferredLanguage: v as Language })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="en">English</SelectItem>
                       <SelectItem value="hi">हिन्दी</SelectItem>
@@ -76,28 +97,55 @@ function OnboardingPage() {
                   </Select>
                 </Field>
                 <Field label="Age (optional)">
-                  <Input type="number" min={1} max={120} value={data.age ?? ""} onChange={(e) => setData({ ...data, age: e.target.value ? Number(e.target.value) : undefined })} />
+                  <Input
+                    type="number"
+                    min={1}
+                    max={120}
+                    value={data.age ?? ""}
+                    onChange={(e) =>
+                      setData({ ...data, age: e.target.value ? Number(e.target.value) : undefined })
+                    }
+                  />
                 </Field>
               </>
             )}
             {step === 1 && (
               <>
                 <Field label="State (optional)">
-                  <Input placeholder="e.g. Maharashtra" value={data.state ?? ""} onChange={(e) => setData({ ...data, state: e.target.value })} />
+                  <Input
+                    placeholder="e.g. Maharashtra"
+                    value={data.state ?? ""}
+                    onChange={(e) => setData({ ...data, state: e.target.value })}
+                  />
                 </Field>
                 <Field label="District (optional)">
-                  <Input placeholder="e.g. Pune" value={data.district ?? ""} onChange={(e) => setData({ ...data, district: e.target.value })} />
+                  <Input
+                    placeholder="e.g. Pune"
+                    value={data.district ?? ""}
+                    onChange={(e) => setData({ ...data, district: e.target.value })}
+                  />
                 </Field>
               </>
             )}
             {step === 2 && (
               <>
                 <Field label="Occupation (optional)">
-                  <Input placeholder="e.g. Student, Farmer, Shopkeeper" value={data.occupation ?? ""} onChange={(e) => setData({ ...data, occupation: e.target.value })} />
+                  <Input
+                    placeholder="e.g. Student, Farmer, Shopkeeper"
+                    value={data.occupation ?? ""}
+                    onChange={(e) => setData({ ...data, occupation: e.target.value })}
+                  />
                 </Field>
                 <Field label="Annual household income band (optional)">
-                  <Select value={data.incomeBand ?? ""} onValueChange={(v) => setData({ ...data, incomeBand: v as CitizenProfile["incomeBand"] })}>
-                    <SelectTrigger><SelectValue placeholder="Select band" /></SelectTrigger>
+                  <Select
+                    value={data.incomeBand ?? ""}
+                    onValueChange={(v) =>
+                      setData({ ...data, incomeBand: v as CitizenProfile["incomeBand"] })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select band" />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="below_1L">Below ₹1 lakh</SelectItem>
                       <SelectItem value="1L_3L">₹1L – ₹3L</SelectItem>
@@ -109,10 +157,18 @@ function OnboardingPage() {
                 </Field>
                 <div className="flex flex-wrap gap-6 pt-2">
                   <label className="flex items-center gap-2 text-sm">
-                    <Checkbox checked={!!data.isStudent} onCheckedChange={(v) => setData({ ...data, isStudent: !!v })} /> I am a student
+                    <Checkbox
+                      checked={!!data.isStudent}
+                      onCheckedChange={(v) => setData({ ...data, isStudent: !!v })}
+                    />{" "}
+                    I am a student
                   </label>
                   <label className="flex items-center gap-2 text-sm">
-                    <Checkbox checked={!!data.isFarmer} onCheckedChange={(v) => setData({ ...data, isFarmer: !!v })} /> I am a farmer
+                    <Checkbox
+                      checked={!!data.isFarmer}
+                      onCheckedChange={(v) => setData({ ...data, isFarmer: !!v })}
+                    />{" "}
+                    I am a farmer
                   </label>
                 </div>
               </>
@@ -123,7 +179,9 @@ function OnboardingPage() {
                 <dl className="grid grid-cols-2 gap-y-2">
                   {Object.entries(data).map(([k, v]) => (
                     <div key={k} className="contents">
-                      <dt className="text-muted-foreground capitalize">{k.replace(/([A-Z])/g, " $1")}</dt>
+                      <dt className="text-muted-foreground capitalize">
+                        {k.replace(/([A-Z])/g, " $1")}
+                      </dt>
                       <dd>{String(v ?? "—")}</dd>
                     </div>
                   ))}
@@ -133,16 +191,22 @@ function OnboardingPage() {
           </div>
 
           <div className="mt-6 flex items-center justify-between border-t pt-4 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" /> Your data stays in this browser for the demo.</span>
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="h-4 w-4" /> Your data stays in this browser for the demo.
+            </span>
           </div>
 
           <div className="mt-6 flex justify-between">
-            <Button variant="outline" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>Back</Button>
+            <Button variant="outline" disabled={step === 0} onClick={() => setStep((s) => s - 1)}>
+              Back
+            </Button>
             {step < STEPS.length - 1 ? (
               <Button
                 onClick={() => setStep((s) => s + 1)}
                 disabled={step === 0 && !data.fullName?.trim()}
-              >Continue</Button>
+              >
+                Continue
+              </Button>
             ) : (
               <Button onClick={finish} disabled={saving}>
                 {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Finish
@@ -155,10 +219,21 @@ function OnboardingPage() {
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <div className="space-y-1.5">
-      <Label>{label}{required && <span className="ml-1 text-destructive">*</span>}</Label>
+      <Label>
+        {label}
+        {required && <span className="ml-1 text-destructive">*</span>}
+      </Label>
       {children}
     </div>
   );

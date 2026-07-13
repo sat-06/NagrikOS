@@ -9,9 +9,23 @@ const TONES: Record<Tone, string> = {
   danger: "bg-destructive/10 text-destructive border-destructive/20",
 };
 
-export function StatusBadge({ tone = "neutral", children, className }: { tone?: Tone; children: React.ReactNode; className?: string }) {
+export function StatusBadge({
+  tone = "neutral",
+  children,
+  className,
+}: {
+  tone?: Tone;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium", TONES[tone], className)}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium",
+        TONES[tone],
+        className,
+      )}
+    >
       <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current" />
       {children}
     </span>
