@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { Card } from "@/components/ui/card";
@@ -129,6 +129,7 @@ function AiSaathi() {
 
 function MessageView({ msg }: { msg: ChatMessage }) {
   const { t } = useI18n();
+  const nav = useNavigate();
   if (msg.role === "user") {
     return (
       <div className="flex justify-end">
@@ -211,11 +212,25 @@ function MessageView({ msg }: { msg: ChatMessage }) {
           <div className="text-xs text-muted-foreground">{msg.disclaimer}</div>
         )}
 
-        <div className="pt-1">
-          <Button size="sm" variant="outline" onClick={() => { toast.success("Mission created from this conversation."); missionService.createFromService("svc-mahadbt-scholarship"); }}>
-            <Target className="mr-1.5 h-3.5 w-3.5" /> {t("chat.turnIntoMission")}
-          </Button>
-        </div>
+        {msg.relatedServices && msg.relatedServices.length > 0 && (
+          <div className="pt-1">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={async () => {
+                try {
+                  const m = await missionService.createFromService(msg.relatedServices![0].id);
+                  toast.success("Mission created from this conversation.");
+                  nav({ to: "/missions/$id", params: { id: m.id } });
+                } catch {
+                  toast.error("Could not create a mission from this conversation.");
+                }
+              }}
+            >
+              <Target className="mr-1.5 h-3.5 w-3.5" /> {t("chat.turnIntoMission")}
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

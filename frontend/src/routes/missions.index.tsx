@@ -12,7 +12,7 @@ import type { CivicMission, MissionStatus } from "@/types";
 import { Target, ArrowRight, MessageSquareText } from "lucide-react";
 import { useI18n } from "@/i18n/i18n-context";
 
-export const Route = createFileRoute("/missions")({
+export const Route = createFileRoute("/missions/")({
   head: () => ({ meta: [{ title: "My Missions — NagrikOS" }] }),
   component: MissionsPage,
 });

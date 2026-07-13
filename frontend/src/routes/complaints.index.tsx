@@ -11,7 +11,7 @@ import type { Complaint } from "@/types";
 import { useI18n } from "@/i18n/i18n-context";
 import { Inbox, MapPin, Users, ArrowRight } from "lucide-react";
 
-export const Route = createFileRoute("/complaints")({
+export const Route = createFileRoute("/complaints/")({
   head: () => ({ meta: [{ title: "My Complaints — NagrikOS" }] }),
   component: ComplaintsPage,
 });

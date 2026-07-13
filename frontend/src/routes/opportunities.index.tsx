@@ -14,7 +14,7 @@ import { useI18n } from "@/i18n/i18n-context";
 import { Search, ArrowRight, CheckCircle2, HelpCircle, AlertTriangle, XCircle, Radar } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 
-export const Route = createFileRoute("/opportunities")({
+export const Route = createFileRoute("/opportunities/")({
   head: () => ({ meta: [{ title: "Opportunity Radar — NagrikOS" }] }),
   component: OpportunitiesPage,
 });
