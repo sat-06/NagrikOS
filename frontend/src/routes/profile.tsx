@@ -167,8 +167,8 @@ function ProfilePage() {
             </div>
           </Card>
           <Card className="p-5 text-xs text-muted-foreground">
-            <ShieldCheck className="mr-1 inline h-3.5 w-3.5" /> This is a frontend demo. In
-            production, your data would sync with your NagrikOS account securely.
+            <ShieldCheck className="mr-1 inline h-3.5 w-3.5" /> Your details are saved securely to
+            your NagrikOS account.
           </Card>
         </div>
       </div>

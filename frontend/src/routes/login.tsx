@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/auth-context";
+import { getApiErrorMessage } from "@/lib/api/client";
 import { BrandMark } from "@/components/layout/brand-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,8 +41,8 @@ function LoginPage() {
       await login(email, password);
       toast.success("Welcome back to NagrikOS");
       navigate({ to: "/dashboard" });
-    } catch {
-      setError("Could not sign in. Please try again.");
+    } catch (err) {
+      setError(getApiErrorMessage(err, "Could not sign in. Please try again."));
     } finally {
       setLoading(false);
     }
@@ -71,7 +72,7 @@ function LoginPage() {
           </Link>
           <h1 className="mt-4 font-display text-2xl font-semibold">Sign in</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Use the demo credentials or your own values — this is a frontend demo.
+            Use the seeded demo credentials or your own account.
           </p>
 
           <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
