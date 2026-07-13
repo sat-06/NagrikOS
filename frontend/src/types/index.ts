@@ -30,6 +30,8 @@ export interface CitizenProfile {
 
   dateOfBirth?: string;
 
+  age?: number;
+
   occupation?: string;
 
   incomeBand?: string;
