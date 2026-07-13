@@ -52,7 +52,7 @@ function ReportPage() {
     }
     if (step === 2) {
       setDupLoading(true); setStep(3);
-      const d = await complaintService.findDuplicates(description);
+      const d = await complaintService.findDuplicates(description, analysis?.category);
       setDupes(d); setDupLoading(false);
       return;
     }
@@ -178,7 +178,7 @@ function ReportPage() {
                     <StatusBadge tone="info">{d.similarity}% similar</StatusBadge>
                   </div>
                   <div className="mt-3 flex gap-2">
-                    <Button size="sm" onClick={() => { toast.success("Joined existing issue"); nav({ to: "/complaints" }); }}>Join existing issue</Button>
+                    <Button size="sm" onClick={async () => { try { await complaintService.joinIssue(d.id); toast.success("Joined existing issue"); } catch { toast.error("Could not join this issue."); } nav({ to: "/complaints" }); }}>Join existing issue</Button>
                   </div>
                 </div>
               ))
