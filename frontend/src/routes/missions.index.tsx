@@ -12,7 +12,7 @@ import type { CivicMission, MissionStatus } from "@/types";
 import { Target, ArrowRight, MessageSquareText } from "lucide-react";
 import { useI18n } from "@/i18n/i18n-context";
 
-export const Route = createFileRoute("/missions")({
+export const Route = createFileRoute("/missions/")({
   head: () => ({ meta: [{ title: "My Missions — NagrikOS" }] }),
   component: MissionsPage,
 });
@@ -20,7 +20,9 @@ export const Route = createFileRoute("/missions")({
 function MissionsPage() {
   const { t } = useI18n();
   const [missions, setMissions] = useState<CivicMission[] | null>(null);
-  useEffect(() => { missionService.list().then(setMissions); }, []);
+  useEffect(() => {
+    missionService.list().then(setMissions);
+  }, []);
 
   return (
     <AppShell title={t("missions.title")}>
@@ -41,28 +43,66 @@ function MissionsPage() {
 }
 
 function MissionList({ missions }: { missions: CivicMission[] | null }) {
-  if (!missions) return <div className="grid gap-3 md:grid-cols-2">{[...Array(2)].map((_, i) => <Card key={i} className="h-40 animate-pulse bg-muted/40" />)}</div>;
-  if (missions.length === 0) return (
-    <EmptyState icon={<Target className="h-6 w-6" />} title="You have no missions here yet" description="Ask AI Saathi to turn a question into a trackable mission." action={<Button asChild><Link to="/ai-saathi"><MessageSquareText className="mr-1 h-4 w-4" /> Ask AI Saathi</Link></Button>} />
-  );
+  if (!missions)
+    return (
+      <div className="grid gap-3 md:grid-cols-2">
+        {[...Array(2)].map((_, i) => (
+          <Card key={i} className="h-40 animate-pulse bg-muted/40" />
+        ))}
+      </div>
+    );
+  if (missions.length === 0)
+    return (
+      <EmptyState
+        icon={<Target className="h-6 w-6" />}
+        title="You have no missions here yet"
+        description="Ask AI Saathi to turn a question into a trackable mission."
+        action={
+          <Button asChild>
+            <Link to="/ai-saathi">
+              <MessageSquareText className="mr-1 h-4 w-4" /> Ask AI Saathi
+            </Link>
+          </Button>
+        }
+      />
+    );
   return (
     <div className="grid gap-3 md:grid-cols-2">
       {missions.map((m) => {
         const done = m.steps.filter((s) => s.status === "complete").length;
         const pct = Math.round((done / m.steps.length) * 100);
         return (
-          <Link key={m.id} to="/missions/$id" params={{ id: m.id }} className="group rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-elevated">
+          <Link
+            key={m.id}
+            to="/missions/$id"
+            params={{ id: m.id }}
+            className="group rounded-2xl border bg-card p-5 shadow-card transition hover:shadow-elevated"
+          >
             <div className="flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-xs uppercase tracking-wide text-muted-foreground">{m.category.replace("_", " ")}</div>
+                <div className="text-xs uppercase tracking-wide text-muted-foreground">
+                  {m.category.replace("_", " ")}
+                </div>
                 <h3 className="mt-1 font-display text-lg font-semibold">{m.title}</h3>
               </div>
-              <StatusBadge tone={m.status === "completed" ? "success" : m.status === "archived" ? "neutral" : "info"}>{m.status}</StatusBadge>
+              <StatusBadge
+                tone={
+                  m.status === "completed"
+                    ? "success"
+                    : m.status === "archived"
+                      ? "neutral"
+                      : "info"
+                }
+              >
+                {m.status}
+              </StatusBadge>
             </div>
             <p className="mt-2 text-sm text-muted-foreground">{m.purpose}</p>
             <div className="mt-4">
               <div className="mb-1 flex items-center justify-between text-xs">
-                <span className="text-muted-foreground">{done}/{m.steps.length} steps</span>
+                <span className="text-muted-foreground">
+                  {done}/{m.steps.length} steps
+                </span>
                 <span className="font-medium">{pct}%</span>
               </div>
               <Progress value={pct} className="h-1.5" />

@@ -1,5 +1,11 @@
 import { useI18n } from "@/i18n/i18n-context";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Languages } from "lucide-react";
 
 export function LanguageSwitcher() {

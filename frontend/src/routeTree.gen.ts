@@ -12,15 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ReportIssueRouteImport } from './routes/report-issue'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as OpportunitiesRouteImport } from './routes/opportunities'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as MissionsRouteImport } from './routes/missions'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DocreadyRouteImport } from './routes/docready'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as ComplaintsRouteImport } from './routes/complaints'
 import { Route as AiSaathiRouteImport } from './routes/ai-saathi'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
+import { Route as MissionsIndexRouteImport } from './routes/missions.index'
+import { Route as ComplaintsIndexRouteImport } from './routes/complaints.index'
 import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
 import { Route as MissionsIdRouteImport } from './routes/missions.$id'
 import { Route as ComplaintsIdRouteImport } from './routes/complaints.$id'
@@ -40,19 +40,9 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
-const OpportunitiesRoute = OpportunitiesRouteImport.update({
-  id: '/opportunities',
-  path: '/opportunities',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MissionsRoute = MissionsRouteImport.update({
-  id: '/missions',
-  path: '/missions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -70,11 +60,6 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ComplaintsRoute = ComplaintsRouteImport.update({
-  id: '/complaints',
-  path: '/complaints',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AiSaathiRoute = AiSaathiRouteImport.update({
   id: '/ai-saathi',
   path: '/ai-saathi',
@@ -85,141 +70,159 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
+  id: '/opportunities/',
+  path: '/opportunities/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MissionsIndexRoute = MissionsIndexRouteImport.update({
+  id: '/missions/',
+  path: '/missions/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ComplaintsIndexRoute = ComplaintsIndexRouteImport.update({
+  id: '/complaints/',
+  path: '/complaints/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => OpportunitiesRoute,
+  id: '/opportunities/$id',
+  path: '/opportunities/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MissionsIdRoute = MissionsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => MissionsRoute,
+  id: '/missions/$id',
+  path: '/missions/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ComplaintsIdRoute = ComplaintsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => ComplaintsRoute,
+  id: '/complaints/$id',
+  path: '/complaints/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ai-saathi': typeof AiSaathiRoute
-  '/complaints': typeof ComplaintsRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/docready': typeof DocreadyRoute
   '/login': typeof LoginRoute
-  '/missions': typeof MissionsRouteWithChildren
   '/onboarding': typeof OnboardingRoute
-  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report-issue': typeof ReportIssueRoute
   '/complaints/$id': typeof ComplaintsIdRoute
   '/missions/$id': typeof MissionsIdRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/complaints/': typeof ComplaintsIndexRoute
+  '/missions/': typeof MissionsIndexRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ai-saathi': typeof AiSaathiRoute
-  '/complaints': typeof ComplaintsRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/docready': typeof DocreadyRoute
   '/login': typeof LoginRoute
-  '/missions': typeof MissionsRouteWithChildren
   '/onboarding': typeof OnboardingRoute
-  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report-issue': typeof ReportIssueRoute
   '/complaints/$id': typeof ComplaintsIdRoute
   '/missions/$id': typeof MissionsIdRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/complaints': typeof ComplaintsIndexRoute
+  '/missions': typeof MissionsIndexRoute
+  '/opportunities': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ai-saathi': typeof AiSaathiRoute
-  '/complaints': typeof ComplaintsRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/docready': typeof DocreadyRoute
   '/login': typeof LoginRoute
-  '/missions': typeof MissionsRouteWithChildren
   '/onboarding': typeof OnboardingRoute
-  '/opportunities': typeof OpportunitiesRouteWithChildren
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/report-issue': typeof ReportIssueRoute
   '/complaints/$id': typeof ComplaintsIdRoute
   '/missions/$id': typeof MissionsIdRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
+  '/complaints/': typeof ComplaintsIndexRoute
+  '/missions/': typeof MissionsIndexRoute
+  '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/ai-saathi'
-    | '/complaints'
     | '/dashboard'
     | '/docready'
     | '/login'
-    | '/missions'
     | '/onboarding'
-    | '/opportunities'
     | '/profile'
     | '/register'
     | '/report-issue'
     | '/complaints/$id'
     | '/missions/$id'
     | '/opportunities/$id'
+    | '/complaints/'
+    | '/missions/'
+    | '/opportunities/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/ai-saathi'
-    | '/complaints'
     | '/dashboard'
     | '/docready'
     | '/login'
-    | '/missions'
     | '/onboarding'
-    | '/opportunities'
     | '/profile'
     | '/register'
     | '/report-issue'
     | '/complaints/$id'
     | '/missions/$id'
     | '/opportunities/$id'
+    | '/complaints'
+    | '/missions'
+    | '/opportunities'
   id:
     | '__root__'
     | '/'
     | '/ai-saathi'
-    | '/complaints'
     | '/dashboard'
     | '/docready'
     | '/login'
-    | '/missions'
     | '/onboarding'
-    | '/opportunities'
     | '/profile'
     | '/register'
     | '/report-issue'
     | '/complaints/$id'
     | '/missions/$id'
     | '/opportunities/$id'
+    | '/complaints/'
+    | '/missions/'
+    | '/opportunities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AiSaathiRoute: typeof AiSaathiRoute
-  ComplaintsRoute: typeof ComplaintsRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   DocreadyRoute: typeof DocreadyRoute
   LoginRoute: typeof LoginRoute
-  MissionsRoute: typeof MissionsRouteWithChildren
   OnboardingRoute: typeof OnboardingRoute
-  OpportunitiesRoute: typeof OpportunitiesRouteWithChildren
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   ReportIssueRoute: typeof ReportIssueRoute
+  ComplaintsIdRoute: typeof ComplaintsIdRoute
+  MissionsIdRoute: typeof MissionsIdRoute
+  OpportunitiesIdRoute: typeof OpportunitiesIdRoute
+  ComplaintsIndexRoute: typeof ComplaintsIndexRoute
+  MissionsIndexRoute: typeof MissionsIndexRoute
+  OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,25 +248,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/opportunities': {
-      id: '/opportunities'
-      path: '/opportunities'
-      fullPath: '/opportunities'
-      preLoaderRoute: typeof OpportunitiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/onboarding': {
       id: '/onboarding'
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/missions': {
-      id: '/missions'
-      path: '/missions'
-      fullPath: '/missions'
-      preLoaderRoute: typeof MissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -287,13 +276,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/complaints': {
-      id: '/complaints'
-      path: '/complaints'
-      fullPath: '/complaints'
-      preLoaderRoute: typeof ComplaintsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/ai-saathi': {
       id: '/ai-saathi'
       path: '/ai-saathi'
@@ -308,79 +290,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/opportunities/': {
+      id: '/opportunities/'
+      path: '/opportunities'
+      fullPath: '/opportunities/'
+      preLoaderRoute: typeof OpportunitiesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/missions/': {
+      id: '/missions/'
+      path: '/missions'
+      fullPath: '/missions/'
+      preLoaderRoute: typeof MissionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/complaints/': {
+      id: '/complaints/'
+      path: '/complaints'
+      fullPath: '/complaints/'
+      preLoaderRoute: typeof ComplaintsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities/$id': {
       id: '/opportunities/$id'
-      path: '/$id'
+      path: '/opportunities/$id'
       fullPath: '/opportunities/$id'
       preLoaderRoute: typeof OpportunitiesIdRouteImport
-      parentRoute: typeof OpportunitiesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/missions/$id': {
       id: '/missions/$id'
-      path: '/$id'
+      path: '/missions/$id'
       fullPath: '/missions/$id'
       preLoaderRoute: typeof MissionsIdRouteImport
-      parentRoute: typeof MissionsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/complaints/$id': {
       id: '/complaints/$id'
-      path: '/$id'
+      path: '/complaints/$id'
       fullPath: '/complaints/$id'
       preLoaderRoute: typeof ComplaintsIdRouteImport
-      parentRoute: typeof ComplaintsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface ComplaintsRouteChildren {
-  ComplaintsIdRoute: typeof ComplaintsIdRoute
-}
-
-const ComplaintsRouteChildren: ComplaintsRouteChildren = {
-  ComplaintsIdRoute: ComplaintsIdRoute,
-}
-
-const ComplaintsRouteWithChildren = ComplaintsRoute._addFileChildren(
-  ComplaintsRouteChildren,
-)
-
-interface MissionsRouteChildren {
-  MissionsIdRoute: typeof MissionsIdRoute
-}
-
-const MissionsRouteChildren: MissionsRouteChildren = {
-  MissionsIdRoute: MissionsIdRoute,
-}
-
-const MissionsRouteWithChildren = MissionsRoute._addFileChildren(
-  MissionsRouteChildren,
-)
-
-interface OpportunitiesRouteChildren {
-  OpportunitiesIdRoute: typeof OpportunitiesIdRoute
-}
-
-const OpportunitiesRouteChildren: OpportunitiesRouteChildren = {
-  OpportunitiesIdRoute: OpportunitiesIdRoute,
-}
-
-const OpportunitiesRouteWithChildren = OpportunitiesRoute._addFileChildren(
-  OpportunitiesRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AiSaathiRoute: AiSaathiRoute,
-  ComplaintsRoute: ComplaintsRouteWithChildren,
   DashboardRoute: DashboardRoute,
   DocreadyRoute: DocreadyRoute,
   LoginRoute: LoginRoute,
-  MissionsRoute: MissionsRouteWithChildren,
   OnboardingRoute: OnboardingRoute,
-  OpportunitiesRoute: OpportunitiesRouteWithChildren,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   ReportIssueRoute: ReportIssueRoute,
+  ComplaintsIdRoute: ComplaintsIdRoute,
+  MissionsIdRoute: MissionsIdRoute,
+  OpportunitiesIdRoute: OpportunitiesIdRoute,
+  ComplaintsIndexRoute: ComplaintsIndexRoute,
+  MissionsIndexRoute: MissionsIndexRoute,
+  OpportunitiesIndexRoute: OpportunitiesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { dictionaries } from "./dictionaries";
 import type { Language } from "@/types";
 
@@ -31,7 +39,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     if (typeof document !== "undefined") document.documentElement.lang = lang;
   }, [lang]);
 
-  const t = useCallback((key: string) => dictionaries[lang][key] ?? dictionaries.en[key] ?? key, [lang]);
+  const t = useCallback(
+    (key: string) => dictionaries[lang][key] ?? dictionaries.en[key] ?? key,
+    [lang],
+  );
 
   const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

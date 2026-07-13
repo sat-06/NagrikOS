@@ -56,9 +56,18 @@ export interface CitizenProfile {
 }
 
 export type ServiceCategory =
-  | "healthcare" | "education" | "employment" | "agriculture"
-  | "housing" | "senior_citizen" | "women_child" | "business"
-  | "welfare" | "identity" | "utility" | "roads";
+  | "healthcare"
+  | "education"
+  | "employment"
+  | "agriculture"
+  | "housing"
+  | "senior_citizen"
+  | "women_child"
+  | "business"
+  | "welfare"
+  | "identity"
+  | "utility"
+  | "roads";
 
 export interface ServiceScheme {
   id: string;
@@ -92,8 +101,14 @@ export interface Recommendation {
   explanation: RecommendationExplanation;
 }
 
-export interface ChatMessageAction { title: string; description: string; }
-export interface ChatSource { title: string; url: string; }
+export interface ChatMessageAction {
+  title: string;
+  description: string;
+}
+export interface ChatSource {
+  title: string;
+  url: string;
+}
 
 export interface ChatMessage {
   id: string;
@@ -179,8 +194,13 @@ export interface DocumentReadiness {
 }
 
 export type ComplaintStatus =
-  | "reported" | "ai_classified" | "routed" | "acknowledged"
-  | "in_progress" | "citizen_verification" | "resolved";
+  | "reported"
+  | "ai_classified"
+  | "routed"
+  | "acknowledged"
+  | "in_progress"
+  | "citizen_verification"
+  | "resolved";
 
 export interface ComplaintTimelineEvent {
   id: string;

@@ -5,27 +5,61 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useI18n } from "@/i18n/i18n-context";
 import {
-  MessageSquareText, Radar, Target, FileCheck2, Megaphone, ShieldCheck,
-  ArrowRight, Sparkle,
+  MessageSquareText,
+  Radar,
+  Target,
+  FileCheck2,
+  Megaphone,
+  ShieldCheck,
+  ArrowRight,
+  Sparkle,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "NagrikOS — AI that turns civic confusion into action" },
-      { name: "description", content: "Describe what you need in your own words. NagrikOS surfaces relevant government services, prepares documents, and turns them into trackable civic missions." },
+      {
+        name: "description",
+        content:
+          "Describe what you need in your own words. NagrikOS surfaces relevant government services, prepares documents, and turns them into trackable civic missions.",
+      },
     ],
   }),
   component: Landing,
 });
 
 const CAPABILITIES = [
-  { icon: MessageSquareText, title: "AI Saathi", body: "Describe your situation naturally — in English, हिन्दी, or मराठी. Get grounded, transparent guidance." },
-  { icon: Radar, title: "Opportunity Radar", body: "Personalised government scheme matches with a clear ‘why this matches you’ explanation." },
-  { icon: Target, title: "Civic Missions", body: "Turn a scheme into a step-by-step journey with your next best action always visible." },
-  { icon: FileCheck2, title: "DocReady AI", body: "Know exactly which documents you are missing before you start any application." },
-  { icon: Megaphone, title: "Drishti Report", body: "Report public issues; AI classifies, routes and detects likely nearby duplicates." },
-  { icon: ShieldCheck, title: "Citizen Verification", body: "Was the issue actually resolved? Your confirmation matters — not just the authority’s." },
+  {
+    icon: MessageSquareText,
+    title: "AI Saathi",
+    body: "Describe your situation naturally — in English, हिन्दी, or मराठी. Get grounded, transparent guidance.",
+  },
+  {
+    icon: Radar,
+    title: "Opportunity Radar",
+    body: "Personalised government scheme matches with a clear ‘why this matches you’ explanation.",
+  },
+  {
+    icon: Target,
+    title: "Civic Missions",
+    body: "Turn a scheme into a step-by-step journey with your next best action always visible.",
+  },
+  {
+    icon: FileCheck2,
+    title: "DocReady AI",
+    body: "Know exactly which documents you are missing before you start any application.",
+  },
+  {
+    icon: Megaphone,
+    title: "Drishti Report",
+    body: "Report public issues; AI classifies, routes and detects likely nearby duplicates.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Citizen Verification",
+    body: "Was the issue actually resolved? Your confirmation matters — not just the authority’s.",
+  },
 ];
 
 const PROMPTS = [
@@ -43,9 +77,15 @@ function Landing() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 lg:px-8">
         <BrandMark />
         <div className="flex items-center gap-3">
-          <div className="hidden sm:block"><LanguageSwitcher /></div>
-          <Button variant="ghost" asChild><Link to="/login">{t("cta.signIn")}</Link></Button>
-          <Button asChild><Link to="/register">{t("cta.getStarted")}</Link></Button>
+          <div className="hidden sm:block">
+            <LanguageSwitcher />
+          </div>
+          <Button variant="ghost" asChild>
+            <Link to="/login">{t("cta.signIn")}</Link>
+          </Button>
+          <Button asChild>
+            <Link to="/register">{t("cta.getStarted")}</Link>
+          </Button>
         </div>
       </header>
 
@@ -57,10 +97,15 @@ function Landing() {
             <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center">
               <div>
                 <div className="mb-4 inline-flex items-center gap-2 rounded-full border bg-card/70 px-3 py-1 text-xs font-medium text-muted-foreground shadow-card">
-                  <Sparkle className="h-3.5 w-3.5 text-accent" /> Smart Bharat — AI-Powered Civic Companion
+                  <Sparkle className="h-3.5 w-3.5 text-accent" /> Smart Bharat — AI-Powered Civic
+                  Companion
                 </div>
                 <h1 className="font-display text-4xl font-bold tracking-tight text-balance lg:text-6xl">
-                  AI that turns civic confusion into <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">action</span>.
+                  AI that turns civic confusion into{" "}
+                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    action
+                  </span>
+                  .
                 </h1>
                 <p className="mt-5 max-w-xl text-base text-muted-foreground lg:text-lg">
                   Citizens describe what they need in everyday language. NagrikOS transforms that
@@ -69,7 +114,9 @@ function Landing() {
                 </p>
                 <div className="mt-8 flex flex-wrap items-center gap-3">
                   <Button size="lg" asChild>
-                    <Link to="/register">{t("cta.getStarted")} <ArrowRight className="ml-1 h-4 w-4" /></Link>
+                    <Link to="/register">
+                      {t("cta.getStarted")} <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
                   </Button>
                   <Button size="lg" variant="outline" asChild>
                     <Link to="/login">{t("cta.signIn")}</Link>
@@ -79,12 +126,20 @@ function Landing() {
 
               <Card className="shadow-elevated">
                 <div className="p-5">
-                  <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Try AI Saathi</div>
+                  <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Try AI Saathi
+                  </div>
                   <div className="mt-3 rounded-xl border bg-background p-4">
-                    <p className="text-sm text-muted-foreground">Tell us what you need help with…</p>
+                    <p className="text-sm text-muted-foreground">
+                      Tell us what you need help with…
+                    </p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {PROMPTS.map((p) => (
-                        <Link key={p} to="/register" className="rounded-full border bg-card px-3 py-1.5 text-xs font-medium text-foreground/80 shadow-card transition hover:border-primary/50 hover:text-primary">
+                        <Link
+                          key={p}
+                          to="/register"
+                          className="rounded-full border bg-card px-3 py-1.5 text-xs font-medium text-foreground/80 shadow-card transition hover:border-primary/50 hover:text-primary"
+                        >
                           {p}
                         </Link>
                       ))}
@@ -92,7 +147,9 @@ function Landing() {
                   </div>
                   <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
                     <span>English · हिन्दी · मराठी</span>
-                    <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Guidance only</span>
+                    <span className="inline-flex items-center gap-1">
+                      <ShieldCheck className="h-3.5 w-3.5" /> Guidance only
+                    </span>
                   </div>
                 </div>
               </Card>
@@ -104,8 +161,12 @@ function Landing() {
         <section className="border-t bg-surface-muted/40">
           <div className="mx-auto max-w-6xl px-4 py-16 lg:px-8">
             <div className="mb-10 max-w-2xl">
-              <h2 className="font-display text-3xl font-semibold">Not a chatbot. A civic action agent.</h2>
-              <p className="mt-3 text-muted-foreground">Six connected capabilities that move you from confusion to a clear next step.</p>
+              <h2 className="font-display text-3xl font-semibold">
+                Not a chatbot. A civic action agent.
+              </h2>
+              <p className="mt-3 text-muted-foreground">
+                Six connected capabilities that move you from confusion to a clear next step.
+              </p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {CAPABILITIES.map((c) => {
@@ -128,12 +189,22 @@ function Landing() {
         <section>
           <div className="mx-auto max-w-6xl px-4 py-16 lg:px-8">
             <h2 className="font-display text-3xl font-semibold">One citizen journey</h2>
-            <p className="mt-3 max-w-2xl text-muted-foreground">Follow Aarav from a plain-language ask to a completed civic mission.</p>
+            <p className="mt-3 max-w-2xl text-muted-foreground">
+              Follow Aarav from a plain-language ask to a completed civic mission.
+            </p>
             <ol className="mt-8 grid gap-4 md:grid-cols-4">
               {[
                 { n: "01", h: "Ask", b: "“My mother is 62 and needs healthcare support.”" },
-                { n: "02", h: "Understand", b: "NagrikOS shows what it knows and what is missing." },
-                { n: "03", h: "Discover", b: "PMJAY and Rashtriya Vayoshri appear as likely matches." },
+                {
+                  n: "02",
+                  h: "Understand",
+                  b: "NagrikOS shows what it knows and what is missing.",
+                },
+                {
+                  n: "03",
+                  h: "Discover",
+                  b: "PMJAY and Rashtriya Vayoshri appear as likely matches.",
+                },
                 { n: "04", h: "Act", b: "A Civic Mission is created with the next best action." },
               ].map((s) => (
                 <li key={s.n} className="rounded-2xl border bg-card p-5 shadow-card">
@@ -150,9 +221,18 @@ function Landing() {
         <section className="border-t bg-primary/5">
           <div className="mx-auto grid max-w-6xl gap-6 px-4 py-14 md:grid-cols-3 lg:px-8">
             {[
-              { h: "Grounded, transparent", b: "Every recommendation explains what matched, what is uncertain, and what is missing." },
-              { h: "Multilingual by design", b: "English, हिन्दी and मराठी across every screen — not just the marketing page." },
-              { h: "Guidance, not gate-keeping", b: "NagrikOS does not decide eligibility. Official sources always have the final say." },
+              {
+                h: "Grounded, transparent",
+                b: "Every recommendation explains what matched, what is uncertain, and what is missing.",
+              },
+              {
+                h: "Multilingual by design",
+                b: "English, हिन्दी and मराठी across every screen — not just the marketing page.",
+              },
+              {
+                h: "Guidance, not gate-keeping",
+                b: "NagrikOS does not decide eligibility. Official sources always have the final say.",
+              },
             ].map((x) => (
               <div key={x.h}>
                 <div className="font-display text-lg font-semibold">{x.h}</div>
@@ -167,10 +247,16 @@ function Landing() {
             <h2 className="font-display text-3xl font-semibold text-balance">
               Confusion into clarity. Clarity into action.
             </h2>
-            <p className="mt-3 text-muted-foreground">Create your NagrikOS space in under a minute.</p>
+            <p className="mt-3 text-muted-foreground">
+              Create your NagrikOS space in under a minute.
+            </p>
             <div className="mt-6 flex justify-center gap-3">
-              <Button size="lg" asChild><Link to="/register">{t("cta.getStarted")}</Link></Button>
-              <Button size="lg" variant="outline" asChild><Link to="/login">{t("cta.signIn")}</Link></Button>
+              <Button size="lg" asChild>
+                <Link to="/register">{t("cta.getStarted")}</Link>
+              </Button>
+              <Button size="lg" variant="outline" asChild>
+                <Link to="/login">{t("cta.signIn")}</Link>
+              </Button>
             </div>
           </div>
         </section>
