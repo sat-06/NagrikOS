@@ -1,6 +1,23 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 
 export const TOKEN_STORAGE_KEY = "nagrikos.token";
+
+/** Turn an axios/unknown error into a human-readable message for the UI. */
+export function getApiErrorMessage(error: unknown, fallback: string): string {
+  if (isAxiosError(error)) {
+    if (error.response) {
+      const detail = (error.response.data as { detail?: unknown } | undefined)?.detail;
+      if (typeof detail === "string" && detail.trim()) return detail;
+      if (Array.isArray(detail) && detail.length > 0) {
+        const first = detail[0] as { msg?: string };
+        if (first?.msg) return first.msg;
+      }
+      return fallback;
+    }
+    return "Cannot reach the server. Please make sure the backend is running.";
+  }
+  return fallback;
+}
 
 function resolveBaseUrl(): string {
   const fromEnv =

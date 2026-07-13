@@ -58,14 +58,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     const token = getStoredToken();
     const stored = window.localStorage.getItem(USER_STORAGE_KEY);
-    if (token && stored) {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    // Show the cached user immediately for a snappy refresh...
+    if (stored) {
       try {
         setUser(JSON.parse(stored) as User);
       } catch {
         setUser(null);
       }
     }
-    setLoading(false);
+    // ...then validate the token against the backend and refresh the user.
+    api
+      .get<BackendUser>("/auth/me")
+      .then(({ data }) => {
+        const mapped = mapUser(data);
+        window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(mapped));
+        setUser(mapped);
+      })
+      .catch(() => {
+        // Invalid/expired token: clear stored auth so protected routes redirect.
+        setStoredToken(null);
+        window.localStorage.removeItem(USER_STORAGE_KEY);
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const persist = useCallback((payload: AuthResponsePayload) => {

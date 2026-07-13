@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth/auth-context";
+import { getApiErrorMessage } from "@/lib/api/client";
 import { BrandMark } from "@/components/layout/brand-mark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,8 +43,8 @@ function RegisterPage() {
       await register(fullName.trim(), email, password);
       toast.success("Account created — let's set up your profile.");
       navigate({ to: "/onboarding" });
-    } catch {
-      setError("Could not create account.");
+    } catch (err) {
+      setError(getApiErrorMessage(err, "Could not create account."));
     } finally {
       setLoading(false);
     }
@@ -58,7 +59,7 @@ function RegisterPage() {
           </Link>
           <h1 className="mt-4 font-display text-2xl font-semibold">Create your account</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Frontend demo — no data is sent to a real server.
+            Create an account to save your profile, missions, and complaints.
           </p>
 
           <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
