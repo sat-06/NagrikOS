@@ -12,10 +12,13 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
         const first = detail[0] as { msg?: string };
         if (first?.msg) return first.msg;
       }
-      // Handle array of errors (FastAPI validation errors)
-      const errors = (error.response.data as { detail?: { msg: string }[] } | undefined)?.detail;
-      if (Array.isArray(errors) && errors.length > 0 && errors[0]?.msg) {
-        return errors[0].msg;
+      // Handle FastAPI 422 validation errors with field names
+      const bodyDetail = (error.response.data as { detail?: unknown } | undefined)?.detail;
+      if (Array.isArray(bodyDetail) && bodyDetail.length > 0) {
+        const firstErr = bodyDetail[0] as { msg?: string; loc?: string[] };
+        const fieldName = firstErr?.loc ? firstErr.loc[firstErr.loc.length - 1] : null;
+        const msg = firstErr?.msg ?? "Invalid input";
+        return fieldName ? fieldName + ": " + msg : msg;
       }
       return fallback;
     }

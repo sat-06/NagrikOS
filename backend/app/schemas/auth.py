@@ -34,11 +34,17 @@ class UserOut(BaseModel):
     @classmethod
     def model_validate(cls, user):
         profile = getattr(user, "profile", None)
+        full_name_val = None
+        if profile is not None:
+            try:
+                full_name_val = profile.full_name
+            except Exception:
+                full_name_val = None
 
         return cls(
             id=user.id,
             email=user.email,
-            full_name=profile.full_name if profile else None,
+            full_name=full_name_val,
             is_active=user.is_active,
             created_at=user.created_at,
         )

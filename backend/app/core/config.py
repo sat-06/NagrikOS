@@ -25,7 +25,9 @@ class Settings(BaseSettings):
         "http://localhost:3000,"
         "http://localhost:5173,"
         "http://127.0.0.1:3000,"
-        "https://nagrik-os.vercel.app"
+        "http://127.0.0.1:5173,"
+        "https://nagrik-os.vercel.app,"
+        "https://nagrikos-2.onrender.com"
     )
 
     AI_API_KEY: str = ""

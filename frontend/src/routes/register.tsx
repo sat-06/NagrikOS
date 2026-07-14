@@ -34,8 +34,8 @@ function RegisterPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (!fullName.trim() || !email.includes("@") || password.length < 6) {
-      return setError("Please fill all fields; password needs at least 6 characters.");
+    if (!fullName.trim() || !email.includes("@") || password.length < 8) {
+      return setError("Please fill all fields; password needs at least 8 characters.");
     }
     if (password !== confirm) return setError("Passwords do not match.");
     setLoading(true);

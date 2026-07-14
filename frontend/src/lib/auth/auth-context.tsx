@@ -123,8 +123,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!email || !email.includes("@")) {
         throw new Error("Please enter a valid email address");
       }
-      if (!password || password.length < 6) {
-        throw new Error("Password must be at least 6 characters");
+      if (!password || password.length < 8) {
+        throw new Error("Password must be at least 8 characters");
       }
       const { data } = await api.post<AuthResponsePayload>("/auth/register", {
         email: email.trim().toLowerCase(),
