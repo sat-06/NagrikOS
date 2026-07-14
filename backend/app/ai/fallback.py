@@ -134,39 +134,112 @@ def fallback_saathi_response(
     lang = situation["detected_language"]
     intent = situation["intent"]
 
+    person = ""
+    if situation.get("person_context"):
+        person = f" for your {situation['person_context']}"
+    location = f" in {situation['location_mentioned']}" if situation.get("location_mentioned") else ""
+    ages = f" (age: {situation['explicitly_known_ages'][0]})" if situation.get("explicitly_known_ages") else ""
+
     answers = {
         "en": (
-            "Based on what you shared, I can suggest relevant civic services and next steps. "
-            "I have not verified official eligibility — please complete your profile and review matching schemes."
+            f"I understand you need {intent.replace('_', ' ')}{person}{ages}{location}. "
+            f"Based on what you shared, I can suggest relevant civic services and next steps. "
+            f"To give you more accurate recommendations, I'd like to know your state and income level "
+            f"— you can add these in your profile. "
+            f"I have not verified official eligibility — please review matching schemes below."
         ),
         "hi": (
-            "आपने जो बताया, उसके आधार पर मैं प्रासंगिक सेवाएं और अगले कदम सुझा सकता हूँ। "
-            "यह आधिकारिक पात्रता की पुष्टि नहीं है।"
+            f"मैं समझता हूं कि आपको {intent.replace('_', ' ')}{person}{ages}{location} के लिए मदद चाहिए। "
+            f"आपने जो बताया, उसके आधार पर मैं प्रासंगिक सेवाएं और अगले कदम सुझा सकता हूं। "
+            f"बेहतर सुझावों के लिए कृपया अपनी प्रोफ़ाइल में राज्य और आय की जानकारी जोड़ें। "
+            f"यह आधिकारिक पात्रता की पुष्टि नहीं है।"
         ),
         "mr": (
-            "तुम्ही सांगितलेल्या माहितीवर आधारित, मी संबंधित सेवा आणि पुढील पावले सुचवू शकतो. "
-            "हे अधिकृत पात्रतेची पुष्टी नाही."
+            f"मला समजले की तुम्हाला {intent.replace('_', ' ')}{person}{ages}{location} साठी मदत हवी आहे. "
+            f"तुम्ही सांगितलेल्या माहितीवर आधारित, मी संबंधित सेवा आणि पुढील पावले सुचवू शकतो. "
+            f"अधिक अचूक सूचनांसाठी कृपया प्रोफाइलमध्ये राज्य आणि उत्पन्नाची माहिती भरा. "
+            f"हे अधिकृत पात्रतेची पुष्टी नाही."
         ),
     }
     answer = answers.get(lang, answers["en"])
 
-    actions = [
-        "Complete your citizen profile (state, income band)",
-        "Review matched services in Opportunity Radar",
-        "Start a Civic Mission to track your journey",
-    ]
+    # Generate intent-specific actions
+    base_actions = ["Complete your citizen profile (state, income band) for better matches"]
+    intent_actions = {
+        "healthcare_support": [
+            "Visit the nearest Common Service Centre (CSC) with identity proof",
+            "Check if you qualify for Ayushman Bharat (PM-JAY) — upload documents in DocReady",
+            "Contact ASHA worker or local health centre for scheme enrollment",
+        ],
+        "education_support": [
+            "Visit the National Scholarship Portal (scholarships.gov.in) to check deadlines",
+            "Ask your institution's scholarship cell about state-specific schemes",
+            "Prepare income certificate, caste certificate, and previous marksheets",
+        ],
+        "employment_support": [
+            "Register on the National Career Service portal (ncs.gov.in)",
+            "Check MGNREGA eligibility at your Gram Panchayat",
+            "Look into Skill India / PMKVY for free vocational training",
+        ],
+        "senior_citizen_support": [
+            "Visit the nearest CSC to check pension scheme eligibility",
+            "Apply for Rashtriya Vayoshri Yojana for assistive devices if needed",
+            "Contact the Social Welfare Department in your district",
+        ],
+        "agriculture_support": [
+            "Visit PM-KISAN portal to check beneficiary status",
+            "Contact Krishi Vigyan Kendra (KVK) for scheme guidance",
+            "Check Kisan Credit Card eligibility at your bank",
+        ],
+        "housing_support": [
+            "Check PMAY-Urban or PMAY-Gramin eligibility based on your area",
+            "Visit your municipality or Gram Panchayat for housing scheme forms",
+            "Prepare Aadhaar, income proof, and land documents",
+        ],
+        "women_support": [
+            "Check schemes like Beti Bachao Beti Padhao, Mahila Samman, or Sukanya Samriddhi",
+            "Visit your local Anganwadi centre for women & child schemes",
+            "Contact the Women & Child Development Department in your state",
+        ],
+        "entrepreneurship": [
+            "Check Mudra Loan or Stand-Up India eligibility at your bank",
+            "Register on the Udyam portal (udyamregistration.gov.in) for MSME benefits",
+            "Contact your District Industries Centre (DIC) for startup guidance",
+        ],
+    }
+    actions = base_actions + intent_actions.get(intent, [
+        "Browse all matching services in Opportunity Radar",
+        "Start a Civic Mission to track your journey step by step",
+    ])
+
     if lang == "hi":
-        actions = [
-            "अपनी प्रोफ़ाइल पूरी करें (राज्य, आय स्तर)",
-            "मिलती-जुलती सेवाएं देखें",
-            "ट्रैकिंग के लिए Civic Mission शुरू करें",
-        ]
+        base_actions = ["बेहतर मिलान के लिए नागरिक प्रोफ़ाइल पूर्ण करें (राज्य, आय स्तर)"]
+        hi_actions = {
+            "healthcare_support": [
+                "पहचान पत्र के साथ नजदीकी CSC पर जाएं",
+                "जांचें कि क्या आप आयुष्मान भारत (PM-JAY) के लिए पात्र हैं",
+                "योजना पंजीकरण के लिए ASHA कार्यकर्ता या स्थानीय स्वास्थ्य केंद्र से संपर्क करें",
+            ],
+            "education_support": [
+                "राष्ट्रीय छात्रवृत्ति पोर्टल (scholarships.gov.in) पर जाएं",
+                "राज्य-विशिष्ट योजनाओं के बारे में अपने संस्थान से पूछें",
+            ],
+        }
+        actions = base_actions + hi_actions.get(intent, ["मिलान सेवाएं देखें", "Civic Mission शुरू करें"])
     elif lang == "mr":
-        actions = [
-            "नागरिक प्रोफाइल पूर्ण करा",
-            "जुळणाऱ्या सेवा पहा",
-            "Civic Mission सुरू करा",
-        ]
+        base_actions = ["चांगल्या जुळणीसाठी नागरिक प्रोफाइल पूर्ण करा (राज्य, उत्पन्न स्तर)"]
+        mr_actions = {
+            "healthcare_support": [
+                "ओळखपत्रासह जवळच्या CSC ला भेट द्या",
+                "आयुष्मान भारत (PM-JAY) साठी पात्रता तपासा",
+                "योजना नोंदणीसाठी ASHA कार्यकर्ता किंवा स्थानिक आरोग्य केंद्राशी संपर्क साधा",
+            ],
+            "education_support": [
+                "राष्ट्रीय शिष्यवृत्ती पोर्टलला (scholarships.gov.in) भेट द्या",
+                "राज्य-विशिष्ट योजनांबद्दल आपल्या संस्थेला विचारा",
+            ],
+        }
+        actions = base_actions + mr_actions.get(intent, ["जुळणाऱ्या सेवा पहा", "Civic Mission सुरू करा"])
 
     return {
         "answer": answer,
@@ -176,7 +249,7 @@ def fallback_saathi_response(
         "suggested_actions": actions,
         "related_services": related_services[:5],
         "sources": [{"type": "internal_knowledge_base", "note": "Demo scheme records"}],
-        "confidence": 0.55,
+        "confidence": 0.65,
         "uncertainty_notes": [
             "AI provider not configured or unavailable — using rule-based analysis",
             "Eligibility not verified",

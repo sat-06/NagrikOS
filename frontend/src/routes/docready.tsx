@@ -57,9 +57,19 @@ function DocReadyPage() {
     setServicesError(null);
     servicesService
       .list()
-      .then((list) => setServices(list))
+      .then((list) => {
+        if (!list || list.length === 0) {
+          setServicesError("No services found. Make sure the backend is running and has been seeded.");
+        } else {
+          setServices(list);
+          // Auto-select if query param passed
+          if (initial.svc && list.some((s) => s.id === initial.svc)) {
+            setSelected(initial.svc);
+          }
+        }
+      })
       .catch((err) =>
-        setServicesError(getApiErrorMessage(err, "Could not load services. Please try again.")),
+        setServicesError(getApiErrorMessage(err, "Could not load services. Please try again later.")),
       )
       .finally(() => setServicesLoading(false));
   }, []);
@@ -101,27 +111,40 @@ function DocReadyPage() {
                 />
               </SelectTrigger>
               <SelectContent>
-                {services.length > 0 ? (
+                {servicesLoading ? (
+                  <div className="px-2 py-3 text-sm text-muted-foreground text-center">
+                    <Loader2 className="mx-auto h-4 w-4 animate-spin mb-1" />
+                    Loading services...
+                  </div>
+                ) : services.length > 0 ? (
                   services.map((s) => (
                     <SelectItem key={s.id} value={s.id}>
                       {s.name}
                     </SelectItem>
                   ))
                 ) : (
-                  <div className="px-2 py-2 text-sm text-muted-foreground">
-                    No services available.
+                  <div className="px-3 py-4 text-sm text-center">
+                    <p className="text-muted-foreground mb-2">No services available</p>
+                    <p className="text-xs text-muted-foreground/60">
+                      Make sure the backend is running and the database is seeded.
+                    </p>
+                    <Button size="sm" variant="outline" className="mt-3" onClick={() => window.location.reload()}>
+                      Retry
+                    </Button>
                   </div>
                 )}
               </SelectContent>
             </Select>
           </div>
-          {!servicesLoading && (servicesError || services.length === 0) && (
-            <div className="mt-2 flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-warning-foreground">
+          {!servicesLoading && servicesError && (
+            <div className="mt-2 flex items-start gap-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-xs">
               <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
-              <span>
-                {servicesError ??
-                  "No services found. Make sure the backend is running and its database has been seeded (python -m app.db.seed)."}
-              </span>
+              <div>
+                <p className="font-medium text-warning-foreground">{servicesError}</p>
+                <p className="mt-1 text-muted-foreground">
+                  The services list loads publicly from the backend API. No authentication is required.
+                </p>
+              </div>
             </div>
           )}
 
