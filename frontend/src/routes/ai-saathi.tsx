@@ -57,11 +57,11 @@ function AiSaathi() {
     if (search.q) send(search.q);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search.q, activeId]);
+  const active = sessions.find((s) => s.id === activeId) ?? null;
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [active?.messages.length]);
-
-  const active = sessions.find((s) => s.id === activeId) ?? null;
 
   async function newConversation() {
     const s = await chatService.createSession("");
