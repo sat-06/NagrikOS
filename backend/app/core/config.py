@@ -21,7 +21,12 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
 
-    CORS_ORIGINS: str = "http://localhost:3000,http://localhost:5173,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080"
+    CORS_ORIGINS = (
+        "http://localhost:3000,"
+        "http://localhost:5173,"
+        "http://127.0.0.1:3000,"
+        "https://nagrik-os.vercel.app"
+    )
 
     AI_API_KEY: str = ""
     AI_BASE_URL: str = "https://api.openai.com/v1"
