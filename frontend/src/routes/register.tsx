@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Check, Eye, EyeOff, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/register")({
@@ -19,6 +19,15 @@ export const Route = createFileRoute("/register")({
   }),
   component: RegisterPage,
 });
+
+function PasswordRule({ met, label }: { met: boolean; label: string }) {
+  return (
+    <div className={`flex items-center gap-1.5 ${met ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground"}`}>
+      {met ? <Check className="h-3 w-3 shrink-0" /> : <X className="h-3 w-3 shrink-0" />}
+      <span>{label}</span>
+    </div>
+  );
+}
 
 function RegisterPage() {
   const { register } = useAuth();
@@ -104,6 +113,24 @@ function RegisterPage() {
                   {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
+              {password.length > 0 && (
+                <div className="mt-2 space-y-1 rounded-lg border bg-surface-muted/40 px-3 py-2 text-xs">
+                  <div className="mb-1 font-medium text-muted-foreground">Password requirements</div>
+                  <PasswordRule met={password.length >= 8} label="At least 8 characters" />
+                  <PasswordRule
+                    met={/[A-Z]/.test(password)}
+                    label="At least one uppercase letter (A-Z)"
+                  />
+                  <PasswordRule
+                    met={/[a-z]/.test(password)}
+                    label="At least one lowercase letter (a-z)"
+                  />
+                  <PasswordRule
+                    met={/[0-9]/.test(password)}
+                    label="At least one number (0-9)"
+                  />
+                </div>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="confirm">Confirm password</Label>
