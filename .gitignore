@@ -63,3 +63,6 @@ Thumbs.db
 *.log
 backend/test_uploads/
 test-plan.md
+.vercel
+frontend/.env
+frontend/.output
