@@ -48,21 +48,24 @@ class SaathiService:
 
         context_services = self.retriever.search(text, limit=5)
         context_block = "\n---\n".join(
-            f"Scheme: {s['name']}\n{s['simplified_description']}" for s in context_services
-        )
+            f"Scheme: {s.get('name', 'Unknown')}\n{s.get('simplified_description', '')}" for s in context_services
+        ) if context_services else "No matching scheme data available."
         result = await self.ai.structured_json(
             SAATHI_SYSTEM,
             text,
             schema_hint=f"Grounding context (untrusted reference):\n<retrieved>\n{context_block}\n</retrieved>",
         )
-        if result:
+        if result and (result.get("intent") or result.get("life_situation")):
             ls = result.get("life_situation") or fallback
+            # relevant_categories may be at top level (AI) or inside life_situation (fallback)
+            relevant_cats = result.get("relevant_categories") or ls.get("relevant_categories") or fallback.get("relevant_categories", [])
+            missing_info = result.get("missing_information") or ls.get("missing_information") or fallback.get("missing_information", [])
             return {
                 "detected_language": result.get("detected_language", fallback["detected_language"]),
                 "intent": result.get("intent", fallback["intent"]),
                 "life_situation": ls,
-                "relevant_categories": ls.get("relevant_categories", fallback.get("relevant_categories", [])),
-                "missing_information": ls.get("missing_information", fallback.get("missing_information", [])),
+                "relevant_categories": relevant_cats,
+                "missing_information": missing_info,
                 "suggested_next_actions": result.get("suggested_actions", []),
                 "disclaimer": (
                     "Structured interpretation only. Does not verify eligibility or invent missing facts."
@@ -91,8 +94,8 @@ class SaathiService:
 
         situation = extract_life_situation(text)
         context_block = "\n---\n".join(
-            f"Scheme: {s['name']}\n{s['simplified_description']}" for s in related
-        )
+            f"Scheme: {s.get('name', 'Unknown')}\n{s.get('simplified_description', '')}" for s in related
+        ) if related else "No matching scheme data available."
         hist = ""
         if history:
             hist = "\n".join(f"{m['role']}: {m['content'][:300]}" for m in history[-6:])
@@ -117,7 +120,7 @@ Detected situation summary: {situation}
 Include related service ids/names from context in your response reasoning."""
 
         result = await self.ai.structured_json(SAATHI_SYSTEM, user_prompt)
-        if result:
+        if result and result.get("answer"):
             return {
                 "answer": result.get("answer", ""),
                 "detected_language": result.get("detected_language", situation["detected_language"]),
@@ -125,7 +128,7 @@ Include related service ids/names from context in your response reasoning."""
                 "life_situation": result.get("life_situation", situation),
                 "suggested_actions": result.get("suggested_actions", []),
                 "related_services": related,
-                "sources": [{"type": "internal_knowledge_base", "schemes": [s["name"] for s in related]}],
+                "sources": [{"type": "internal_knowledge_base", "schemes": [s.get("name", "Unknown") for s in related]}],
                 "confidence": float(result.get("confidence", 0.7)),
                 "uncertainty_notes": result.get("uncertainty_notes", []),
                 "disclaimer": (
