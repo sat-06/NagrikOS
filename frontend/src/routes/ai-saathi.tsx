@@ -59,14 +59,13 @@ function AiSaathi() {
   }, [search.q, activeId]);
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  });
+  }, [active?.messages.length]);
 
   const active = sessions.find((s) => s.id === activeId) ?? null;
 
   async function newConversation() {
-    const s = await chatService.createSession("New conversation");
-    const list = await chatService.listSessions();
-    setSessions(list);
+    const s = await chatService.createSession("");
+    setSessions((prev) => [s, ...prev]);
     setActiveId(s.id);
   }
 
@@ -99,9 +98,76 @@ function AiSaathi() {
           : s,
       ),
     );
-    await chatService.sendMessage(sessionId, content);
-    const list = await chatService.listSessions();
-    setSessions(list);
+    try {
+      const response = await chatService.sendMessage(sessionId, content);
+      // Update sessions with returned data
+      setSessions((prev) =>
+        prev.map((s) => {
+          if (s.id !== sessionId) return s;
+          const userMsg: ChatMessage = {
+            id: String(response.user_message.id),
+            role: "user",
+            content: response.user_message.content,
+            createdAt: response.user_message.created_at,
+          };
+          const assistantMsg: ChatMessage = {
+            id: String(response.assistant_message.id),
+            role: "assistant",
+            content: response.assistant_message.content,
+            createdAt: response.assistant_message.created_at,
+          };
+          if (response.metadata) {
+            const meta = response.metadata;
+            if (meta.life_situation || meta.intent) {
+              assistantMsg.understoodSituation = {
+                primaryNeed: meta.intent ?? undefined,
+                personContext: (meta.life_situation as Record<string, unknown>)?.person_context as string | undefined,
+                known: {},
+                missing: ((meta.life_situation as Record<string, unknown>)?.missing_information as string[] ?? []).map(
+                  (v: string) => v.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase()),
+                ),
+                categories: meta.intent ? [meta.intent.replace(/_/g, " ").replace(/\b\w/g, (c: string) => c.toUpperCase())] : [],
+              };
+            }
+            if (meta.suggested_actions?.length) {
+              assistantMsg.suggestedActions = meta.suggested_actions.map((a: string) => ({ title: a, description: "" }));
+            }
+            if (meta.related_services?.length) {
+              assistantMsg.relatedServices = meta.related_services.map((s: Record<string, unknown>) => ({
+                id: String(s.id ?? s.name ?? "service"),
+                name: (s.name as string) ?? "Related service",
+                category: "welfare" as const,
+                shortDescription: "",
+                simplifiedDescription: "",
+                targetGroups: [],
+                benefits: [],
+                requiredDocuments: [],
+                applicationSteps: [],
+                stateApplicability: [],
+                sourceName: "",
+                sourceUrl: "#",
+                lastReviewed: "—",
+              }));
+            }
+            if (meta.uncertainty_notes?.length) {
+              assistantMsg.uncertainty = meta.uncertainty_notes.join(" ");
+            }
+            if (meta.disclaimer) {
+              assistantMsg.disclaimer = meta.disclaimer;
+            }
+          }
+          const filtered = s.messages.filter((m) => !String(m.id).startsWith("tmp-"));
+          return {
+            ...s,
+            title: s.title === "New conversation" ? content.slice(0, 80) : s.title,
+            messages: [...filtered, userMsg, assistantMsg],
+          };
+        }),
+      );
+    } catch {
+      const list = await chatService.listSessions();
+      setSessions(list);
+    }
     setSending(false);
   }
 

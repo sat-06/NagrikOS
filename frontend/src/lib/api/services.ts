@@ -98,6 +98,24 @@ interface ChatMessageOut {
   created_at: string;
 }
 
+interface SaathiMetadataOut {
+  detected_language: string;
+  intent?: string | null;
+  life_situation?: Record<string, unknown> | null;
+  suggested_actions: string[];
+  related_services: Record<string, unknown>[];
+  sources: Record<string, unknown>[];
+  confidence: number;
+  uncertainty_notes: string[];
+  disclaimer: string;
+}
+
+interface SendMessageResponse {
+  user_message: ChatMessageOut;
+  assistant_message: ChatMessageOut;
+  metadata: SaathiMetadataOut;
+}
+
 interface MissionStepOut {
   id: number;
   order: number;
@@ -477,6 +495,7 @@ async function fetchSession(s: ChatSessionOut): Promise<ChatSession> {
 
 export const chatService = {
   async listSessions(): Promise<ChatSession[]> {
+    await ensureServiceCache();
     const { data } = await api.get<ChatSessionOut[]>("/saathi/sessions");
     return Promise.all(data.map(fetchSession));
   },
@@ -489,8 +508,9 @@ export const chatService = {
       messages: [],
     };
   },
-  async sendMessage(sessionId: string, content: string): Promise<void> {
-    await api.post(`/saathi/sessions/${sessionId}/messages`, { content });
+  async sendMessage(sessionId: string, content: string): Promise<SendMessageResponse> {
+    const { data } = await api.post<SendMessageResponse>(`/saathi/sessions/${sessionId}/messages`, { content });
+    return data;
   },
 };
 

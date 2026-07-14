@@ -103,7 +103,7 @@ def extract_life_situation(text: str) -> Dict[str, Any]:
         "housing_support": ["housing"],
         "women_support": ["women support"],
         "entrepreneurship": ["entrepreneurship"],
-        "document_guidance": ["identity/certificates"],
+        "document_guidance": ["identity/certificates", "general"],
     }
     relevant = categories_map.get(intent, ["general"])
 
