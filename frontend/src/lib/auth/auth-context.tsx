@@ -78,11 +78,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         window.localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(mapped));
         setUser(mapped);
       })
-      .catch(() => {
-        // Invalid/expired token: clear stored auth so protected routes redirect.
-        setStoredToken(null);
-        window.localStorage.removeItem(USER_STORAGE_KEY);
-        setUser(null);
+      .catch((err) => {
+        // Only clear token for 401 (expired). Network errors mean backend is down.
+        const status = err?.response?.status;
+        if (status === 401) {
+          setStoredToken(null);
+          window.localStorage.removeItem(USER_STORAGE_KEY);
+          setUser(null);
+        }
+        // For network errors or 500s, keep the cached user
+        console.warn("Auth validation failed:", err?.message ?? "Unknown error");
       })
       .finally(() => setLoading(false));
   }, []);
@@ -111,10 +116,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(
     async (fullName: string, email: string, password: string) => {
+      // Validate input before sending
+      if (!fullName || !fullName.trim()) {
+        throw new Error("Full name is required");
+      }
+      if (!email || !email.includes("@")) {
+        throw new Error("Please enter a valid email address");
+      }
+      if (!password || password.length < 6) {
+        throw new Error("Password must be at least 6 characters");
+      }
       const { data } = await api.post<AuthResponsePayload>("/auth/register", {
-        email,
+        email: email.trim().toLowerCase(),
         password,
-        full_name: fullName,
+        full_name: fullName.trim(),
       });
       persist(data);
     },

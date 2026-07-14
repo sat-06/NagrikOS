@@ -44,6 +44,11 @@ def create_app() -> FastAPI:
             database=db_type,
         )
 
+    @app.options("/{rest_of_path:path}")
+    async def preflight_handler():
+        """Handle CORS preflight requests for all routes."""
+        return {}
+
     return app
 
 

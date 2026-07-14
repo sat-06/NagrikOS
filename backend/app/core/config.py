@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440
 
-    CORS_ORIGINS = (
+    CORS_ORIGINS: str = (
         "http://localhost:3000,"
         "http://localhost:5173,"
         "http://127.0.0.1:3000,"
@@ -48,7 +48,22 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
-        return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+        origins = [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+        # Always add vercel.app wildcard for preview deployments
+        origins.append("https://*.vercel.app")
+        # Add common localhost ports
+        origins.append("http://localhost:5173")
+        origins.append("http://localhost:3000")
+        origins.append("http://127.0.0.1:5173")
+        origins.append("http://127.0.0.1:3000")
+        # Deduplicate while preserving order
+        seen = set()
+        unique = []
+        for o in origins:
+            if o not in seen:
+                seen.add(o)
+                unique.append(o)
+        return unique
 
     @property
     def ai_enabled(self) -> bool:

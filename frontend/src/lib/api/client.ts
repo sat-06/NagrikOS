@@ -12,19 +12,32 @@ export function getApiErrorMessage(error: unknown, fallback: string): string {
         const first = detail[0] as { msg?: string };
         if (first?.msg) return first.msg;
       }
+      // Handle array of errors (FastAPI validation errors)
+      const errors = (error.response.data as { detail?: { msg: string }[] } | undefined)?.detail;
+      if (Array.isArray(errors) && errors.length > 0 && errors[0]?.msg) {
+        return errors[0].msg;
+      }
       return fallback;
     }
-    return "Cannot reach the server. Please make sure the backend is running.";
+    if (error.code === "ERR_NETWORK" || error.message?.includes("Network Error")) {
+      return "Cannot reach the server. Please make sure the backend is running.";
+    }
+    return fallback;
   }
   return fallback;
 }
 
 function resolveBaseUrl(): string {
-  const fromEnv =
-    typeof import.meta !== "undefined"
-      ? (import.meta.env?.VITE_API_BASE_URL as string | undefined)
-      : undefined;
-  return (fromEnv ?? "http://localhost:8000").replace(/\/$/, "");
+  if (typeof window !== "undefined") {
+    // In browser: use VITE_API_BASE_URL env var, or detect from current origin
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fromEnv = (import.meta as any)?.env as Record<string, string> | undefined;
+    if (fromEnv?.VITE_API_BASE_URL && fromEnv.VITE_API_BASE_URL.trim()) {
+      return fromEnv.VITE_API_BASE_URL.replace(/\/$/, "");
+    }
+  }
+  // Default to localhost for development
+  return "http://localhost:8000";
 }
 
 export function getStoredToken(): string | null {
@@ -40,6 +53,7 @@ export function setStoredToken(token: string | null): void {
 
 export const api = axios.create({
   baseURL: `${resolveBaseUrl()}/api/v1`,
+  timeout: 15000,
 });
 
 api.interceptors.request.use((config) => {
@@ -50,3 +64,15 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (isAxiosError(error) && !error.response) {
+      // Network error — backend might be down
+      console.error("Backend unreachable:", error.message);
+    }
+    return Promise.reject(error);
+  },
+);
