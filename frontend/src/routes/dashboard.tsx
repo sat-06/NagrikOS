@@ -21,6 +21,7 @@ import {
   missionService,
   recommendationService,
   complaintService,
+  statsService,
 } from "@/lib/api/services";
 import type { CivicMission, Complaint, Recommendation, CitizenProfile } from "@/types";
 import { useI18n } from "@/i18n/i18n-context";
@@ -36,6 +37,58 @@ const PROMPTS = [
   "I want to start a small business",
   "I want to report a pothole",
 ];
+
+function DashboardStats() {
+  const [stats, setStats] = useState<{
+    active_missions: number;
+    completed_missions: number;
+    active_complaints: number;
+    resolved_complaints: number;
+    avg_mission_progress: number;
+    profile_completeness: number;
+    total_missions: number;
+    total_complaints: number;
+  } | null>(null);
+
+  useEffect(() => {
+    statsService.getDashboardStats().then(setStats).catch(() => null);
+  }, []);
+
+  if (!stats) return null;
+
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <Card className="p-4 text-center">
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">Missions</div>
+        <div className="mt-1 font-display text-2xl font-bold">{stats.total_missions}</div>
+        <div className="mt-0.5 text-xs text-muted-foreground">
+          {stats.completed_missions} completed · {stats.avg_mission_progress}% avg progress
+        </div>
+      </Card>
+      <Card className="p-4 text-center">
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">Complaints</div>
+        <div className="mt-1 font-display text-2xl font-bold">{stats.total_complaints}</div>
+        <div className="mt-0.5 text-xs text-muted-foreground">
+          {stats.resolved_complaints} resolved · {stats.active_complaints} active
+        </div>
+      </Card>
+      <Card className="p-4 text-center">
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">Document Readiness</div>
+        <div className="mt-1 font-display text-2xl font-bold">{stats.profile_completeness}%</div>
+        <div className="mt-0.5 text-xs text-muted-foreground">Profile completeness</div>
+      </Card>
+      <Card className="p-4 text-center">
+        <div className="text-xs uppercase tracking-wide text-muted-foreground">Next Best Action</div>
+        <div className="mt-1 font-display text-2xl font-bold">
+          {stats.active_missions > 0 ? "Continue" : "Start"}
+        </div>
+        <div className="mt-0.5 text-xs text-muted-foreground">
+          {stats.active_missions > 0 ? `${stats.active_missions} mission(s) in progress` : "Begin your first mission"}
+        </div>
+      </Card>
+    </div>
+  );
+}
 
 function Dashboard() {
   const { t } = useI18n();
@@ -133,6 +186,11 @@ function Dashboard() {
             </div>
           </Link>
         ))}
+      </section>
+
+      {/* At-a-glance stats */}
+      <section className="mt-6">
+        <DashboardStats />
       </section>
 
       {/* Row: readiness + missions */}

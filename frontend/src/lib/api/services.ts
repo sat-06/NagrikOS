@@ -356,6 +356,38 @@ export const profileService = {
 };
 
 // ---------------------------------------------------------------------------
+// Public & dashboard stats
+// ---------------------------------------------------------------------------
+
+interface PublicStatsResponse {
+  total_schemes: number;
+  total_categories: number;
+  categories: { name: string; count: number }[];
+}
+
+interface DashboardStatsResponse {
+  active_missions: number;
+  completed_missions: number;
+  active_complaints: number;
+  resolved_complaints: number;
+  avg_mission_progress: number;
+  profile_completeness: number;
+  total_missions: number;
+  total_complaints: number;
+}
+
+export const statsService = {
+  async getPublicStats(): Promise<PublicStatsResponse> {
+    const { data } = await api.get<PublicStatsResponse>("/stats/public");
+    return data;
+  },
+  async getDashboardStats(): Promise<DashboardStatsResponse> {
+    const { data } = await api.get<DashboardStatsResponse>("/stats/dashboard");
+    return data;
+  },
+};
+
+// ---------------------------------------------------------------------------
 // Services / schemes
 // ---------------------------------------------------------------------------
 

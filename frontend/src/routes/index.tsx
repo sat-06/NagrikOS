@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import { BrandMark } from "@/components/layout/brand-mark";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useI18n } from "@/i18n/i18n-context";
+import { statsService } from "@/lib/api/services";
 import {
   MessageSquareText,
   Radar,
@@ -13,6 +15,8 @@ import {
   ShieldCheck,
   ArrowRight,
   Sparkle,
+  Layers,
+  LayoutGrid,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -68,6 +72,49 @@ const PROMPTS = [
   "I want to start a small business.",
   "There is a dangerous pothole near my college.",
 ];
+
+function LiveStats() {
+  const [stats, setStats] = useState<{ total_schemes: number; total_categories: number; categories: { name: string; count: number }[] } | null>(null);
+
+  useEffect(() => {
+    statsService.getPublicStats().then(setStats).catch(() => null);
+  }, []);
+
+  if (!stats) return null;
+
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Card className="p-5 text-center">
+        <div className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+          <Layers className="h-5 w-5" />
+        </div>
+        <div className="font-display text-3xl font-bold">{stats.total_schemes}</div>
+        <div className="mt-1 text-xs text-muted-foreground">Government schemes indexed</div>
+      </Card>
+      <Card className="p-5 text-center">
+        <div className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-xl bg-accent/10 text-accent">
+          <LayoutGrid className="h-5 w-5" />
+        </div>
+        <div className="font-display text-3xl font-bold">{stats.total_categories}</div>
+        <div className="mt-1 text-xs text-muted-foreground">Service categories covered</div>
+      </Card>
+      <Card className="p-5 text-center">
+        <div className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-xl bg-emerald-500/10 text-emerald-500">
+          <MessageSquareText className="h-5 w-5" />
+        </div>
+        <div className="font-display text-3xl font-bold">3</div>
+        <div className="mt-1 text-xs text-muted-foreground">Languages supported</div>
+      </Card>
+      <Card className="p-5 text-center">
+        <div className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-xl bg-amber-500/10 text-amber-500">
+          <ShieldCheck className="h-5 w-5" />
+        </div>
+        <div className="font-display text-3xl font-bold">24/7</div>
+        <div className="mt-1 text-xs text-muted-foreground">Guidance availability</div>
+      </Card>
+    </div>
+  );
+}
 
 function Landing() {
   const { t } = useI18n();
@@ -154,6 +201,13 @@ function Landing() {
                 </div>
               </Card>
             </div>
+          </div>
+        </section>
+
+        {/* Live Stats */}
+        <section className="border-t">
+          <div className="mx-auto max-w-6xl px-4 py-12 lg:px-8">
+            <LiveStats />
           </div>
         </section>
 
