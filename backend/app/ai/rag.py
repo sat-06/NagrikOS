@@ -52,7 +52,7 @@ class CivicKnowledgeRetriever:
         scored = []
         for s in schemes:
             score = cosine_similarity_tfidf(query, self._corpus_text(s))
-            if score > 0 or normalize_text(query) in self._corpus_text(s):
+            if score > 0.01 or normalize_text(query) in self._corpus_text(s):
                 item = self._service_to_dict(s)
                 item["retrieval_score"] = round(score, 4)
                 scored.append((score, item))
