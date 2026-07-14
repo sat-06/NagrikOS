@@ -70,9 +70,13 @@ class AIProvider:
         if not content:
             return None
         try:
-            return json.loads(content)
+            parsed = json.loads(content)
+            if not isinstance(parsed, dict):
+                logger.warning("AI returned non-dict JSON: %s", type(parsed).__name__)
+                return None
+            return parsed
         except json.JSONDecodeError:
-            logger.warning("AI returned invalid JSON")
+            logger.warning("AI returned invalid JSON, content preview: %.200s", content)
             return None
 
 
