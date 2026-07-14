@@ -1,152 +1,272 @@
-# NagrikOS
+# 🏛️ NagrikOS – AI Civic Action Agent
 
-**AI that turns civic confusion into action.**
+> **An AI-powered digital governance platform that simplifies how citizens discover government schemes, manage civic issues, and access public services through a unified intelligent assistant.**
 
-NagrikOS is a GenAI-powered civic companion platform built for **Smart Bharat – AI-Powered Civic Companion**. It helps citizens access government services, understand complex civic information, receive personalized assistance, report public issues, and track their civic journey end-to-end.
+![Python](https://img.shields.io/badge/Python-3.11+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-009688)
+![React](https://img.shields.io/badge/React-Frontend-61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![Vite](https://img.shields.io/badge/Vite-Frontend-purple)
 
-## Unique Value Proposition
+---
 
-Unlike generic chatbots with complaint forms, NagrikOS is an **AI Civic Action Agent**:
+# 🌐 Live Deployment
 
-- **Life Situation Mode** — converts free-form problems into structured civic understanding
-- **Opportunity Radar** — explainable, profile-based scheme recommendations
-- **Civic Mission Engine** — trackable journeys from problem to action
-- **DocReady AI** — document readiness guidance (not verification)
-- **Drishti Reports** — AI-assisted issue reporting with duplicate detection
-- **Citizen-Verified Resolution** — citizens confirm or dispute resolutions
+### 🚀 Frontend
+**https://nagrik-os.vercel.app/**
 
-## Features
+### ⚡ Backend
+**https://nagrikos-2.onrender.com**
 
-| Module | Description |
-|--------|-------------|
-| Authentication | JWT auth, registration, profile management |
-| AI Saathi | Multilingual civic AI companion (EN/HI/MR) |
-| Services KB | 18 demo scheme records across 9 categories |
-| Opportunity Radar | Transparent match scoring with explanations |
-| Civic Missions | Step-based trackable civic journeys |
-| DocReady | Secure upload + readiness comparison |
-| Drishti Reports | AI complaint drafting + duplicate intelligence |
-| Timeline | Full complaint lifecycle tracking |
+---
 
-## Tech Stack
+# 📖 Overview
 
-- **Backend:** Python, FastAPI, Pydantic, SQLAlchemy
-- **Database:** PostgreSQL-ready; SQLite fallback for local demo
-- **Auth:** JWT + bcrypt
-- **AI:** OpenAI-compatible provider with deterministic fallbacks
-- **Testing:** pytest (22 tests)
+Navigating government services often requires citizens to search across multiple portals, understand complex eligibility criteria, collect numerous documents, and repeatedly visit different offices.
 
-## Repository Structure
+**NagrikOS** addresses these challenges by providing a single AI-powered platform where citizens can interact using natural language while receiving personalized recommendations, civic guidance, complaint management, and document assistance.
+
+The platform combines Artificial Intelligence with modern web technologies to make government services more accessible, transparent, and citizen-friendly.
+
+---
+
+# 🎯 Core Objectives
+
+- Simplify access to government schemes.
+- Reduce confusion regarding eligibility and documentation.
+- Enable AI-driven civic assistance.
+- Digitize complaint registration and tracking.
+- Personalize recommendations using citizen profiles.
+- Provide an intuitive and multilingual user experience.
+
+---
+
+# ✨ Features
+
+## 🤖 AI Saathi
+
+AI Saathi is the intelligent assistant at the core of NagrikOS.
+
+Users can describe their situations naturally instead of searching through multiple government websites.
+
+AI Saathi provides:
+
+- Context-aware civic guidance
+- Personalized government scheme recommendations
+- Life situation analysis
+- Suggested next actions
+- Relevant official sources
+- Multilingual conversational assistance
+
+---
+
+## 👤 Citizen Profile
+
+A centralized citizen profile enables personalized recommendations across the platform.
+
+The profile stores information such as:
+
+- Full Name
+- State & District
+- Occupation
+- Income Category
+- Preferred Language
+- Student Status
+- Farmer Status
+- Senior Citizen Status
+- Additional citizen attributes
+
+The recommendation engine uses this information to provide highly relevant government schemes.
+
+---
+
+## 🎯 Opportunity Radar
+
+Opportunity Radar intelligently recommends government schemes based on the user's profile.
+
+Each recommendation includes:
+
+- Eligibility details
+- Benefits
+- Required documents
+- Application process
+- Official references
+- Personalized matching criteria
+
+This eliminates the need for manually searching across multiple government portals.
+
+---
+
+## 📄 DocReady AI
+
+DocReady AI evaluates whether a citizen possesses the required documents before applying for a scheme.
+
+Features include:
+
+- Document readiness score
+- Missing document detection
+- Available document tracking
+- Application readiness analysis
+- Next recommended actions
+
+---
+
+## 🚨 Drishti Reports
+
+Drishti Reports enables citizens to report civic issues using AI-assisted complaint management.
+
+Capabilities include:
+
+- AI-powered complaint categorization
+- Department recommendation
+- Duplicate complaint detection
+- Complaint timeline tracking
+- Resolution verification
+- Support for joining existing public issues
+
+---
+
+## 🎯 Civic Missions
+
+Government applications often involve multiple sequential steps.
+
+Civic Missions converts complex government processes into structured task flows.
+
+Each mission includes:
+
+- Step-by-step guidance
+- Progress tracking
+- Required documents
+- Mission completion status
+- Recommended next action
+
+---
+
+## 📊 Personalized Dashboard
+
+The dashboard provides a consolidated overview of citizen activity.
+
+It displays:
+
+- Active missions
+- Personalized scheme recommendations
+- Complaint progress
+- Document readiness
+- Profile completion
+- Civic insights
+
+---
+
+## 🔐 Secure Authentication
+
+The platform implements JWT-based authentication for secure access.
+
+Features include:
+
+- User Registration
+- Secure Login
+- Persistent Sessions
+- Protected Routes
+- Profile-based authorization
+
+---
+
+# 🏗️ System Architecture
+
+NagrikOS follows a modern client-server architecture.
+
+### Frontend
+
+- React
+- TypeScript
+- Vite
+- TanStack Router
+- Tailwind CSS
+- Shadcn UI
+- Axios
+
+### Backend
+
+- FastAPI
+- SQLAlchemy
+- Pydantic
+- JWT Authentication
+- SQLite / PostgreSQL
+- Uvicorn
+
+### AI Layer
+
+- OpenAI API Integration
+- Prompt Engineering
+- Civic Recommendation Engine
+- Complaint Classification
+- Natural Language Understanding
+
+---
+
+# 📂 Project Structure
 
 ```
-NagrikOS/
-├── backend/          # FastAPI application
-│   ├── app/          # Application code
-│   └── tests/        # pytest suite
-├── frontend/         # Reserved for frontend agent
-├── docs/             # Architecture & handoff documentation
-├── scripts/          # Utility scripts (seed)
-├── .env.example      # Environment template
+NagrikOS
+│
+├── backend
+│   ├── app
+│   │   ├── api
+│   │   ├── ai
+│   │   ├── core
+│   │   ├── db
+│   │   ├── models
+│   │   ├── schemas
+│   │   ├── services
+│   │   └── utils
+│   │
+│   └── requirements.txt
+│
+├── frontend
+│   ├── src
+│   │   ├── components
+│   │   ├── routes
+│   │   ├── lib
+│   │   ├── assets
+│   │   ├── hooks
+│   │   ├── types
+│   │   └── i18n
+│
 └── README.md
 ```
 
-## Local Setup
+---
 
-### Prerequisites
+# 🔒 Security
 
-- Python 3.11+
-- (Optional) PostgreSQL
+The platform incorporates several security measures including:
 
-### 1. Clone and configure
+- JWT Authentication
+- Password Hashing
+- Protected API Endpoints
+- Secure Token Storage
+- Request Validation using Pydantic
+- CORS Protection
+- Environment Variable Configuration
 
-```bash
-git clone https://github.com/sat-06/NagrikOS.git
-cd NagrikOS
-cp .env.example .env
-```
+---
 
-### 2. Backend setup
+# 💻 Technology Stack
 
-```bash
-cd backend
-python -m venv .venv
-# Windows
-.\.venv\Scripts\activate
-# macOS/Linux
-source .venv/bin/activate
+| Layer | Technologies |
+|--------|--------------|
+| Frontend | React, TypeScript, Vite, Tailwind CSS, Shadcn UI |
+| Backend | FastAPI, SQLAlchemy, Pydantic |
+| Authentication | JWT |
+| Database | SQLite / PostgreSQL |
+| AI | OpenAI API |
+| Deployment | Vercel, Render |
+| Version Control | Git & GitHub |
 
-pip install -r requirements.txt
-```
+---
 
-### 3. Seed demo data
 
-```bash
-python -m app.db.seed
-# or from repo root:
-python scripts/seed.py
-```
 
-### 4. Start backend
+# ⭐ Support
 
-```bash
-cd backend
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-```
-
-### 5. API docs
-
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
-- Health: http://localhost:8000/health
-
-## Demo Credentials
-
-| Field | Value |
-|-------|-------|
-| Email | `demo@nagrikos.in` |
-| Password | `Demo@12345` |
-
-## Environment Variables
-
-See `.env.example` for full list. Key variables:
-
-| Variable | Description |
-|----------|-------------|
-| `DATABASE_URL` | PostgreSQL URL (empty = SQLite) |
-| `JWT_SECRET_KEY` | Secret for JWT signing |
-| `CORS_ORIGINS` | Comma-separated allowed origins |
-| `AI_API_KEY` | OpenAI-compatible API key (optional) |
-| `UPLOAD_DIR` | Document upload directory |
-
-## Testing
-
-```bash
-cd backend
-pytest tests/ -v
-```
-
-## Limitations & Disclaimer
-
-This is a **hackathon prototype**:
-
-- Scheme records are **demo data** — not officially verified
-- DocReady provides **readiness guidance**, not official document verification
-- AI recommendations are **indicative** — not eligibility confirmation
-- Complaint routing is **simulated** — no real government integration
-- AI features work without API key via **deterministic fallbacks**
-
-Always verify eligibility and requirements with official government sources.
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [API Contract](docs/API_CONTRACT.md)
-- [Database Schema](docs/DATABASE_SCHEMA.md)
-- [AI Workflows](docs/AI_WORKFLOWS.md)
-- [Security & Privacy](docs/SECURITY_PRIVACY.md)
-- [Hackathon Scope](docs/HACKATHON_SCOPE.md)
-- [Backend Handoff (Frontend Integration)](docs/BACKEND_HANDOFF.md)
-
-## License
-
-Hackathon project — see repository for details.
+If you found this project useful, consider giving it a **⭐ Star** on GitHub.
