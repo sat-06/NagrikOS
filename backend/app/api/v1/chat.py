@@ -90,23 +90,27 @@ async def send_message(
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    user_msg = ChatMessage(session_id=session.id, role="user", content=data.content)
-    db.add(user_msg)
-    db.flush()
-
+    # Build history BEFORE adding the user message so the AI sees previous messages only
     history = [{"role": m.role, "content": m.content} for m in session.messages]
+
     saathi = SaathiService(db)
     result = await saathi.respond(data.content, history)
+
+    # Now persist the user message
+    user_msg = ChatMessage(session_id=session.id, role="user", content=data.content)
+    db.add(user_msg)
 
     assistant_msg = ChatMessage(
         session_id=session.id,
         role="assistant",
-        content=result["answer"],
+        content=result.get("answer", ""),
         metadata_json=json.dumps(result, ensure_ascii=False),
     )
     db.add(assistant_msg)
-    if not session.title or session.title == "New conversation":
-        session.title = data.content[:80]
+
+    is_new_conversation = not session.title or session.title.strip() == "New conversation"
+    if is_new_conversation:
+        session.title = data.content[:80].strip() or "New conversation"
     db.commit()
     db.refresh(user_msg)
     db.refresh(assistant_msg)
@@ -137,4 +141,12 @@ async def analyze_life_situation(
 ):
     saathi = SaathiService(db)
     result = await saathi.analyze_life_situation(data.text)
-    return LifeSituationResponse(**result)
+    return LifeSituationResponse(
+        detected_language=result.get("detected_language", "en"),
+        intent=result.get("intent"),
+        life_situation=result.get("life_situation", {}),
+        relevant_categories=result.get("relevant_categories", []),
+        missing_information=result.get("missing_information", []),
+        suggested_next_actions=result.get("suggested_next_actions", []),
+        disclaimer=result.get("disclaimer", ""),
+    )
